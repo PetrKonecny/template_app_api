@@ -28,7 +28,7 @@ class ElementService {
     }
     
     public function createElement($array){
-        if($array['type'] == 'text_element'){
+        if ($array['type'] == 'text_element'){
             $element = new TextElement($array);
         }else if($array['type'] == 'image_element'){
             $element = new ImageElement($array);

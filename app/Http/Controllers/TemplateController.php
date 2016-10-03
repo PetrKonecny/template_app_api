@@ -28,12 +28,14 @@ class TemplateController extends Controller {
     public function store () {
         $data = Input::all();
         $template = $this->templateService->createTemplate($data);
+        return $this->templateService->findByIdNested($template->id);
     }
     
     public function update() {
         $data = Input::all();
         $template = $this->templateService->findById(Input::get('id',0));
         $this->templateService->updateTemplate($template,$data);
+        return $this->templateService->findByIdNested($template->id);
     }
 
 }

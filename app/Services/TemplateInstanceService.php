@@ -50,15 +50,27 @@ class TemplateInstanceService {
     public function updateTemplateInstance($templateInst, $array){
         $templateInst->name = $array['name'];
         $templateInst->save();        
-        foreach($templateInst->contents as $index=>$content) {
-            if($array['contents'][$index]['type'] == 'text_content'){
-                $content->text = $array['contents'][$index]['text'];
+        foreach($array['contents'] as $content) {
+            if($content['type'] == 'text_content'){
+                if(isset($content['id'])){
+                    $content2 = Content::find($content['id']);
+                }else{
+                    $content2 = new TextContent();
+                }
+                $content2->text = $content['text'];
             }
-            if($array['contents'][$index]['type'] == 'image_content'){
+            if($content['type'] == 'image_content'){
+                if(isset($content['id'])){
+                    $content2 = Content::find($content['id']);
+                }else{
+                    $content2 = new ImageContent();
+                }
                 $image = Image::find($content['image']['id']);
-                $content->image()->associate($image); 
+                $content2->image()->associate($image); 
             }
-            $content->save();
+            $element = Element::find($content['element_id']);
+            $content2->element()->associate($element);
+            $templateInst->contents()->save($content2);
         }    
     }
    

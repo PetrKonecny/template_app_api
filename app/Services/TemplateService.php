@@ -54,16 +54,16 @@ class TemplateService
                 $page3->delete();
             }
         }
-        
-        $template->save();
-        
+                
         foreach ($array['pages'] as $page){
             if((isset($page['id']))){
                 $pageService->updatePage($pageService->findById($page['id']),$page);
             }else{
-                $pageService->createPage($page);
+                $page = $pageService->createPage($page);
+                $template->pages()->save($page);
             }
         }
+        $template->save();
     }
     
     public function getPagesForTemplate(Template $template){
