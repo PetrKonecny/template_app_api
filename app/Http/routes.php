@@ -24,6 +24,11 @@ Route::get('templateInstance/{id}/html', [
 Route::get('templateInstance/{id}/pdf', [
     'uses' => 'TemplateInstanceController@getAsPdf'
 ]);
+Route::resource('font', 'FontController');
+
+Route::get('font/{id}/file', [
+    'uses' => 'FontController@getFile'
+]);
 
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
     return $server->getImageResponse($path, $request->all());
