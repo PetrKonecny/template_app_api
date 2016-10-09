@@ -20,7 +20,7 @@ class Element extends Model {
     public function page(){
         return $this->belongsTo(Page::class);
     }
-    
+        
     public function contents(){
         return $this->hasMany(Content::class,'element_id');
     }

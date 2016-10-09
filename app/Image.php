@@ -9,8 +9,8 @@ class Image extends Model
 {
         protected $fillable = ['image','name'];
         
-        public function imageContent(){
-            return $this->hasOne(ImageContent::class);
+        public function imageContents(){
+            return $this->hasMany(ImageContent::class);
         }
 
 }

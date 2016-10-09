@@ -19,7 +19,15 @@ class TemplateService
     }
     
     public function findByIdNested($id){
-        return Template::with('pages','pages.elements')->find($id);
+        $template =  Template::with('pages','pages.elements')->find($id);
+        foreach($template->pages as $page){
+            foreach($page->elements as $element){
+                if($element->type == 'text_element'){
+                    $element->font;
+                }
+            }
+        }
+        return $template;
     }
     
     public function createTemplate($array){
