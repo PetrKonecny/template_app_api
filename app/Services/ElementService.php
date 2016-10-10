@@ -50,6 +50,9 @@ class ElementService {
             $font = Font::find($array['font']['id']);
             $element->font()->associate($font);
         }
+        if(isset($array['fontSize'])){
+            $element->font_size = $array['fontSize'];
+        }
         $element->width = $array['width'];
         $element->height = $array['height'];
         $element->positionX = $array['positionX'];
