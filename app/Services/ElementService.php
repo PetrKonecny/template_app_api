@@ -5,6 +5,7 @@ use App\Element;
 use App\TextElement;
 use App\ImageElement;
 use App\Font;
+use App\Services\ContentService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,6 +30,8 @@ class ElementService {
     }
     
     public function createElement($array){
+        echo (json_encode($array));
+        $contentService = new ContentService();
         if ($array['type'] == 'text_element'){
             $element = new TextElement($array);
             if(isset($array['font']) && (isset($array['font']['id']))){
@@ -38,6 +41,11 @@ class ElementService {
             $element = new ImageElement($array);
         }
         $element->save();
+        if (isset ($array['content'])) {
+            $content = $contentService->createContent($array['content']);
+            $content->element()->associate($element);
+            $content->save();
+        }
         return $element;
     }
     
@@ -46,12 +54,17 @@ class ElementService {
     }
     
     public function updateElement($element, $array){
+        $contentService = new ContentService();
         if(isset($array['font']) && (isset($array['font']['id']))){
             $font = Font::find($array['font']['id']);
             $element->font()->associate($font);
         }
         if(isset($array['fontSize'])){
             $element->font_size = $array['fontSize'];
+        }
+        if (isset ($array['content'])) {
+            $content = $contentService->createContent($array['content']);
+            $content->element()->associate($element);
         }
         $element->width = $array['width'];
         $element->height = $array['height'];

@@ -9,7 +9,7 @@ use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 class Element extends Model {
     
     
-    protected $fillable = ['width','height','positionX','positionY'];
+    protected $fillable = ['width','height','positionX','positionY','font_size'];
 
     use SingleTableInheritanceTrait;
 
@@ -25,6 +25,10 @@ class Element extends Model {
         return $this->hasMany(Content::class,'element_id');
     }
     
+    public function content(){
+        return $this->hasOne(Content::class,'element_id')->where('template_instance_id',0);
+    }
+    
     public function contentsForInstance($instanceId){
         return $this->hasMany(Content::class,'element_id')->where('template_instance_id',$instanceId);
     }
@@ -32,7 +36,7 @@ class Element extends Model {
     public function toHtml($instanceId){
         return 
         "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; background-color: black; z-index:".($this->id + 1)."; opacity:0.25;'></div>"
-        ."<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2)."; font-size: 12pt;'>"
+        ."<div style='transform: rotate(20deg); position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2)."; font-size: 12pt;'>"
         .$this->contentsForInstance($instanceId)->first()->toHtml()
         ."</div>";
     }

@@ -9,6 +9,7 @@ use App\ImageContent;
 use App\TextContent;
 use App\Element;
 use App\Template;
+use App\Services\ContentService;
 
 class TemplateInstanceService {
 
@@ -28,19 +29,13 @@ class TemplateInstanceService {
     }
     
     public function createTemplateInstance($array){
+        $contentService = new ContentService();
         $templateInst = new TemplateInstance($array);
         $template = Template::find($array['template_id']);
         $templateInst->template()->associate($template);
         $templateInst->save();
-        foreach($array['contents'] as $content){
-            if($content['type'] == 'text_content'){
-                $content2 = new TextContent($content);
-            }
-            if($content['type'] == 'image_content'){
-                $content2 = new ImageContent($content);
-                $image = Image::find($content['image']['id']);
-                $content2->image()->associate($image);
-            }
+        foreach($array['contents'] as $content) {
+            $content2 = $contentService->createContent($content);
             $element = Element::find($content['element_id']);
             $content2->element()->associate($element);
             $templateInst->contents()->save($content2);
@@ -48,25 +43,14 @@ class TemplateInstanceService {
     }
     
     public function updateTemplateInstance($templateInst, $array){
+        $contentService = new ContentService();
         $templateInst->name = $array['name'];
         $templateInst->save();        
         foreach($array['contents'] as $content) {
-            if($content['type'] == 'text_content'){
-                if(isset($content['id'])){
-                    $content2 = Content::find($content['id']);
-                }else{
-                    $content2 = new TextContent();
-                }
-                $content2->text = $content['text'];
-            }
-            if($content['type'] == 'image_content'){
-                if(isset($content['id'])){
-                    $content2 = Content::find($content['id']);
-                }else{
-                    $content2 = new ImageContent();
-                }
-                $image = Image::find($content['image']['id']);
-                $content2->image()->associate($image); 
+            if(isset($content['id'])){
+                $content2 = $contentService->updateContent(Content::find($content['id']), $content);
+            }else{
+                $content2 = $contentService->createContent($content);
             }
             $element = Element::find($content['element_id']);
             $content2->element()->associate($element);

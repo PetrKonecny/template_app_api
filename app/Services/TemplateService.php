@@ -6,6 +6,7 @@ use App\Template;
 use App\Page;
 use App\TextElement;
 use App\Element;
+use App\Services\PageService;
 
 class TemplateService
 {
@@ -18,12 +19,16 @@ class TemplateService
         return Template::find($id);
     }
     
+    /*TODO: should be done better using interface tables */ 
     public function findByIdNested($id){
         $template =  Template::with('pages','pages.elements')->find($id);
         foreach($template->pages as $page){
             foreach($page->elements as $element){
                 if($element->type == 'text_element'){
                     $element->font;
+                }
+                if($element->content->type == 'image_content'){
+                    $element->content->image;
                 }
             }
         }
