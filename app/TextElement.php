@@ -24,7 +24,7 @@ class TextElement extends Element {
             $string .= "</style>";
             $family = "font-family: font".$this->font->id.";";
         }
-        $string .= '<div style="'.$family.'; position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px; z-index: '.($this->id + 2).'; font-size: '.$this->font_size.'">';
+        $string .= '<div style="'.$family.'; position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px; z-index: '.($this->id + 2).'; font-size: '.$this->font_size.'px">';
         $string .= $this->contentsForInstance($instanceId)->first()->toHtml();
         $string .= "</div>";
         return $string;

@@ -86,4 +86,7 @@
   'font3' => array(
     'normal' => $fontDir . '\dd5100394d973307c31af4c423fb6a08',
   ),
+  'font1' => array(
+    'normal' => $fontDir . '\df5f8c939e164641c9c57a79c38dde73',
+  ),
 ) ?>

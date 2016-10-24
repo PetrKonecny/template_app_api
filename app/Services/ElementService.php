@@ -5,6 +5,7 @@ use App\Element;
 use App\TextElement;
 use App\ImageElement;
 use App\Font;
+use App\Content;
 use App\Services\ContentService;
 
 /*
@@ -63,8 +64,12 @@ class ElementService {
             $element->font_size = $array['fontSize'];
         }
         if (isset ($array['content'])) {
-            $content = $contentService->createContent($array['content']);
-            $content->element()->associate($element);
+            if (isset ($array['content']['id'])){
+                $content = $contentService->updateContent(Content::find($array['content']['id']),$array['content']);
+            }else{
+                $content = $contentService->createContent($array['content']);
+                $content->element()->associate($element);
+            }
         }
         $element->width = $array['width'];
         $element->height = $array['height'];

@@ -36,7 +36,7 @@ class Element extends Model {
     public function toHtml($instanceId){
         return 
         "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; background-color: black; z-index:".($this->id + 1)."; opacity:0.25;'></div>"
-        ."<div style='transform: rotate(20deg); position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2)."; font-size: 12pt;'>"
+        ."<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2)."; font-size: 12pt;'>"
         .$this->contentsForInstance($instanceId)->first()->toHtml()
         ."</div>";
     }

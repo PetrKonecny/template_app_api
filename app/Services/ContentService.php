@@ -53,13 +53,7 @@ class ContentService {
     
     public function updateContent($content, $array){
         if($content['type'] == 'text_content'){
-            $content->text = $content['text'];
-            if(isset($array['font']['id'])){
-                $font = Font::find($array['font']['id']);
-                $content->font()->associate($font); 
-            }else{
-                $content->image()->dissociate();
-            }
+            $content->text = $array['text'];         
         }
         if($content['type'] == 'image_content'){
             if(isset($array['image']['id'])){
@@ -68,6 +62,10 @@ class ContentService {
             }else{
                 $content->image()->dissociate();
             }
+            $content->width  = $array['width'];
+            $content->height = $array['height'];
+            $content->left = $array['left'];
+            $content->top = $array['top'];
         }
         $content->save();
         return $content;
