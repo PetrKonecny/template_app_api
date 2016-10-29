@@ -33,6 +33,10 @@ class TemplateInstanceController extends Controller
         $this->templateInstanceService->updateTemplateInstance($templateInstance,$data);
     }
     
+    public function destroy($templateId) {
+        $this->templateInstanceService->deleteTemplateInstance($templateId);
+    }
+    
     public function getAsHtml($templateId){
         $templateInstance = $this->templateInstanceService->findById($templateId);
         echo $templateInstance->toHtml();

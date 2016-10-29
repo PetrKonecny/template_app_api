@@ -28,6 +28,10 @@ class TemplateInstanceService {
         return $templateInst;
     }
     
+    public function deleteTemplateInstance($id){
+        TemplateInstance::destroy($id);
+    }
+    
     public function createTemplateInstance($array){
         $contentService = new ContentService();
         $templateInst = new TemplateInstance($array);
