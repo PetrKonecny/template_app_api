@@ -8,8 +8,21 @@ class Template extends Model {
 
     protected $fillable = ['name'];
     
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($template) { // before delete() method call this
+             $template->templateInstances()->delete();
+             // do the rest of the cleanup...
+        });
+    }
+    
     public function pages() {
         return $this->hasMany(Page::class);
+    }
+    
+    public function templateInstances() {
+        return $this->hasMany(TemplateInstance::class);
     }
     
     public function toHtml($instanceId){

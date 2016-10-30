@@ -48,7 +48,8 @@ class TemplateService
         return $template;
     }
     
-    public function deleteTemplate(Template $template){
+    public function deleteTemplate($id){
+        $template = Template::find($id);
         $template->delete();
     }
     

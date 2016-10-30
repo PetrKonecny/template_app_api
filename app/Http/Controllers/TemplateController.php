@@ -31,6 +31,10 @@ class TemplateController extends Controller {
         return $this->templateService->findByIdNested($template->id);
     }
     
+    public function destroy($id) {
+        $this->templateService->deleteTemplate($id);
+    }
+    
     public function update() {
         $data = Input::all();
         $template = $this->templateService->findById(Input::get('id',0));
