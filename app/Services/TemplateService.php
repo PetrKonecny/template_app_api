@@ -30,6 +30,12 @@ class TemplateService
                 if($element->content->type == 'image_content'){
                     $element->content->image;
                 }
+                if($element->type == 'table_element'){
+                    $element->rows = json_decode($element->rows);
+                }
+                if($element->content->type == 'table_content'){
+                    $element->content->rows = json_decode($element->content->rows);
+                }
             }
         }
         return $template;

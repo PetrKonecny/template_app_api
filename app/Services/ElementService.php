@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Element;
 use App\TextElement;
 use App\ImageElement;
+use App\TableElement;
 use App\Font;
 use App\Content;
 use App\Services\ContentService;
@@ -40,6 +41,9 @@ class ElementService {
             }
         }else if($array['type'] == 'image_element'){
             $element = new ImageElement($array);
+        }else if($array['type'] == 'table_element'){
+            $array['rows'] = json_encode($array['rows']);
+            $element = new TableElement($array);
         }
         $element->save();
         if (isset ($array['content'])) {
@@ -62,6 +66,10 @@ class ElementService {
         }
         if(isset($array['fontSize'])){
             $element->font_size = $array['fontSize'];
+        }
+        if(isset($array['rows'])){
+            $array['rows'] = json_encode($array['rows']);
+            $element->rows = $array['rows'];
         }
         if (isset ($array['content'])) {
             if (isset ($array['content']['id'])){

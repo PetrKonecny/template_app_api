@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\TextContent;
 use App\ImageContent;
+use App\TableContent;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
 class Content extends Model {
@@ -14,7 +15,7 @@ class Content extends Model {
     protected $fillable = ['type'];
     protected $table = "contents";
     protected static $singleTableTypeField = 'type';
-    protected static $singleTableSubclasses = [TextContent::class, ImageContent::class];
+    protected static $singleTableSubclasses = [TextContent::class, ImageContent::class, TableContent::class];
     
     public function page(){
         return $this->belongsTo(TemplateInstance::class);

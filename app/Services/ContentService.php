@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Content;
 use App\TextContent;
 use App\ImageContent;
+use App\TableContent;
 use App\Image;
 use App\Font;
 /*
@@ -43,6 +44,11 @@ class ContentService {
                 $content->image()->associate($image); 
             }
         }
+        
+        if($array['type'] == 'table_content'){
+            $array['rows'] = json_encode($array['rows']);
+            $content = new TableContent($array);
+        }
         $content->save();
         return $content;
     }
@@ -66,6 +72,10 @@ class ContentService {
             $content->height = $array['height'];
             $content->left = $array['left'];
             $content->top = $array['top'];
+        }
+        if($content['type'] == 'table_content'){
+            $array['rows'] = json_encode($array['rows']);
+            $content->rows = $array['rows'];
         }
         $content->save();
         return $content;

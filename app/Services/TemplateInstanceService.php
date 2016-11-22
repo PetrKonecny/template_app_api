@@ -24,6 +24,9 @@ class TemplateInstanceService {
             if($content->type == 'image_content'){
                 $content->image;
             }
+            if($content->type == 'table_content'){
+                $content->rows = json_decode($content->rows);
+            }
         }
         return $templateInst;
     }
