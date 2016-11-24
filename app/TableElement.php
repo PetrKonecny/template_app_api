@@ -8,7 +8,7 @@ class TableElement extends Element {
 
     protected static $singleTableType = 'table_element';
     
-    protected $fillable = ['rows'];
+    protected $fillable = ['rows','positionX','positionY'];
     
     public function toHtml($instanceId){
         
