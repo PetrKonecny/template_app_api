@@ -30,17 +30,52 @@ class TableElement extends Element {
                 $align = "";
                 $vertical = "";
                 $fontSize ="";
+                $cellWidth ="";
+                $cellBackgroundColor="";
+                $cellTextColor="";
+                $cellBorderColor="";
+                $cellColSpan="";
+                $cellRowSpan="";
+                $cellBorderWidth="";
+                $cellBorderStyle="";
                 if(property_exists($cell, "font") && $cell->font != null){
-                    $font = "font-family: font".$cell->font->id."; ";
+                    $font = "font-family: font".$cell->font->id."; ";                  
+                }     
+                if(property_exists($cell, "font_size")){
                     $fontSize = "font-size: ".$cell->font_size."px; ";
-                }               
+                }
                 if(property_exists($cell, "text_align")){
                     $align = "text-align: ".$cell->text_align."; ";
                 }
                 if(property_exists($cell, "vertical_align")){
                     $vertical = "vertical-align: ".$cell->vertical_align."; ";
                 }
-                $string .= "<td style='border: 1px solid black; border-collapse: collapse; width:".$cell->width."px; height:".$row->height."px; ".$font.$fontSize.$align.$vertical."'>".$text."</td>";
+                if(property_exists($cell, "width")){
+                    $cellWidth = "width: ".$cell->width."px; ";
+                }
+                if(property_exists($cell, "background_color")){
+                    $cellBackgroundColor = "background-color: ".$cell->background_color."; ";
+                }
+                if(property_exists($cell, "text_color")){
+                    $cellTextColor = "color: ".$cell->text_color."; ";
+                }
+                if(property_exists($cell, "border_color")){
+                    $cellBorderColor = "border-color: ".$cell->border_color."; ";
+                }
+                if(property_exists($cell, "colspan")){
+                    $cellColSpan = "colspan = ".$cell->colspan." ";
+                }
+                if(property_exists($cell, "rowspan")){
+                    $cellRowSpan = "rowspan = ".$cell->rowspan." ";
+                }
+                if(property_exists($cell, "border_width")){
+                    $cellBorderWidth = "border-width: ".$cell->border_width."px ; ";
+                }
+                if(property_exists($cell, "border_style")){
+                    $cellBorderStyle = "border-style: ".$cell->border_style."; ";
+                }
+   
+                $string .= "<td ".$cellColSpan.$cellRowSpan."style='border: 1px solid black; border-collapse: collapse; height:".$row->height."px; ".$cellWidth.$font.$fontSize.$align.$vertical.$cellBackgroundColor.$cellBorderColor.$cellTextColor.$cellBorderWidth.$cellBorderStyle."'>".$text."</td>";
             }
             $string .= "</tr>";
         }

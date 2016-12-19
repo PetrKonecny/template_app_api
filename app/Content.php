@@ -12,7 +12,7 @@ class Content extends Model {
         
     use SingleTableInheritanceTrait;
         
-    protected $fillable = ['type'];
+    protected $fillable = ['type','element_id'];
     protected $table = "contents";
     protected static $singleTableTypeField = 'type';
     protected static $singleTableSubclasses = [TextContent::class, ImageContent::class, TableContent::class];
