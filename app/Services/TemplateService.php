@@ -27,13 +27,16 @@ class TemplateService
                 if($element->type == 'text_element'){
                     $element->font;
                 }
-                if($element->content->type == 'image_content'){
+                if($element->type == 'image_element'){
+                    $element->image;
+                }
+                if($element->content && $element->content->type == 'image_content'){
                     $element->content->image;
                 }
                 if($element->type == 'table_element'){
                     $element->rows = json_decode($element->rows);
                 }
-                if($element->content->type == 'table_content'){
+                if($element->content && $element->content->type == 'table_content'){
                     $element->content->rows = json_decode($element->content->rows);
                 }
             }

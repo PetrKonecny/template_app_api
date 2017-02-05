@@ -49,6 +49,6 @@ class TemplateInstanceController extends Controller
         return $pdf->inline();*/
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($this->templateInstanceService->findById($templateId)->toHtml());
-        return $pdf->setPaper('A4', '[portrait')->stream();
+        return @$pdf->setPaper('A4', '[portrait')->stream();
     }
 }

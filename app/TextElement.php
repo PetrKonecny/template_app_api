@@ -33,7 +33,7 @@ class TextElement extends Element {
             $string .= "</style>";
             $family = "font-family: font".$this->font->id.";";
         }
-        $string .= '<div style="'.$family.'; position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px; z-index: '.($this->id + 2).'; font-size: '.$this->font_size.'px; background-color: '.$this->background_color.'; color: '.$this->text_color.';">';    
+        $string .= '<div style="'.$family.' position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px; z-index: '.($this->id + 2).'; font-size: '.$this->font_size.'px; background-color: '.$this->background_color.'; color: '.$this->text_color.';">';    
         $string .= $contentHtml;
         $string .= "</div>";
         return $string;

@@ -15,7 +15,7 @@ class Element extends Model {
 
     protected $table = "elements";
     protected static $singleTableTypeField = 'type';  
-    protected static $singleTableSubclasses = [TextElement::class, ImageElement::class, TableElement::class];
+    protected static $singleTableSubclasses = [TextElement::class, ImageElement::class, TableElement::class, FrameElement::class];
     
     public function page(){
         return $this->belongsTo(Page::class);

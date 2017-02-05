@@ -5,8 +5,10 @@ use App\Element;
 use App\TextElement;
 use App\ImageElement;
 use App\TableElement;
+use App\FrameElement;
 use App\Font;
 use App\Content;
+use App\Image;
 use App\Services\ContentService;
 
 /*
@@ -39,9 +41,16 @@ class ElementService {
             if(isset($array['font']) && (isset($array['font']['id']))){
                 $element->font()->associate(Font::find($array['font']['id']));
             }
+        }else if($array['type'] == 'frame_element'){
+            $element = new FrameElement($array);
         }else if($array['type'] == 'image_element'){
             $element = new ImageElement($array);
-        }else if($array['type'] == 'table_element'){
+            if(isset($array['image']['id'])){
+                $image = Image::find($array['image']['id']);
+                $element->image()->associate($image); 
+            }
+        }
+        else if($array['type'] == 'table_element'){
             $array['rows'] = json_encode($array['rows']);
             $element = new TableElement($array);
         }

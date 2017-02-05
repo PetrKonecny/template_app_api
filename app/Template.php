@@ -36,6 +36,9 @@ class Template extends Model {
             ."</style>"
             ."</head>"
             ."<body>"
+            ."<style>"
+            ."@font-face { font-family: 'font1'; src: url('http://sablony.skauting.cz/font/1/file');  font-style: normal; font-weight: bold; format('truetype');}"
+            ."</style>"
             .$this->pagesToHtml($instanceId)
             ."</body>"
         ."</html>";
