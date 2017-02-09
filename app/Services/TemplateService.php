@@ -7,6 +7,7 @@ use App\Page;
 use App\TextElement;
 use App\Element;
 use App\Services\PageService;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateService
 {
@@ -14,7 +15,16 @@ class TemplateService
     public function getAll(){
         return Template::all();
     }
+
+    public function getPublicTemplates(){
+        return Template::where('public',true)->get();
+    }
    
+
+    public function getTemplatesForUser($user){
+        return Template::where('user_id',$user->id)-get();
+    }
+
     public function findById($id){
         return Template::find($id);
     }
@@ -47,6 +57,7 @@ class TemplateService
     public function createTemplate($array){
         $pageService = new PageService();
         $template = new Template($array);
+        $template->user()->associate(Auth::user());
         $template->save();
         if(isset($array['pages'])){
             foreach($array['pages'] as $page){

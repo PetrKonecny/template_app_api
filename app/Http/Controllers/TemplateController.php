@@ -7,39 +7,57 @@ use Illuminate\Support\Facades\Input;
 use App\Http\Requests;
 use App\Template;
 use App\Services\TemplateService;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateController extends Controller {
 
     
     public function __construct(TemplateService $service) {
-        $this->templateService = $service;
+        $this->service = $service;
+        $this->middleware('auth');
     }
     
     
     public function index() {
-        return $this->templateService->getAll();
+            return $this->service->getPublicTemplates();
     }
     
-    public function show($id) {
-        $template = $this->templateService->findByIdNested($id);
-        return $template;
+    public function show(Template $template) {
+        if(Auth::User()->can('show',$template)){
+            $template = $this->service->findByIdNested($template->id);
+            return $template;
+        }else{
+            abort(401);
+        }
     }
     
     public function store () {
-        $data = Input::all();
-        $template = $this->templateService->createTemplate($data);
-        return $this->templateService->findByIdNested($template->id);
+        if(Auth::user()->can('create',Template::class)){
+            $data = Input::all();
+            $template = $this->service->createTemplate($data);
+            return $this->service->findByIdNested($template->id);
+        }else{
+            abort(401);
+        }
     }
     
-    public function destroy($id) {
-        $this->templateService->deleteTemplate($id);
+    public function destroy(Template $template) {
+        if(Auth::user()->can('delete',$template)){
+            $this->service->deleteTemplate($template->id);
+        }else{
+            abort(401);
+        }
     }
     
-    public function update() {
-        $data = Input::all();
-        $template = $this->templateService->findById(Input::get('id',0));
-        $this->templateService->updateTemplate($template,$data);
-        return $this->templateService->findByIdNested($template->id);
+    public function update(Template $template) {
+        if(Auth::user()->can('update',$template)){
+            $data = Input::all();
+            $template = $this->service->findById($template->id);
+            $this->service->updateTemplate($template,$data);
+            return $this->service->findByIdNested($template->id);
+        }else{
+            abort(404);
+        }
     }
 
 }

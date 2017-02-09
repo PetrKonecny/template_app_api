@@ -14,14 +14,27 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('login/{id}', [
+    'uses' => 'UserController@login'
+]);
+
+Route::get('logout', [
+    'uses' => 'UserController@logout'
+]);
+
+Route::get('user', [
+    'uses' => 'UserController@getCurrent'
+]);
+
 Route::resource('template', 'TemplateController');
 Route::resource('templateInstance', 'TemplateInstanceController');
 Route::resource('image', 'ImageController');
-Route::get('templateInstance/{id}/html', [
+Route::get('templateInstance/{templateInstance}/html', [
     'uses' => 'TemplateInstanceController@getAsHtml'
 ]);
 
-Route::get('templateInstance/{id}/pdf', [
+Route::get('templateInstance/{templateInstance}/pdf', [
     'uses' => 'TemplateInstanceController@getAsPdf'
 ]);
 Route::resource('font', 'FontController');
@@ -33,3 +46,4 @@ Route::get('font/{id}/file', [
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
     return $server->getImageResponse($path, $request->all());
 });
+

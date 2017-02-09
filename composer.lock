@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d04db06a39c6fbb49d5982bbb5d2cf65",
-    "content-hash": "4b88edd3facb63b05abd74734107a780",
+    "hash": "6b2abf929c68f1cbb9bdeb427edf6b4e",
+    "content-hash": "f6ce135966cde8a6f89497890a72fd4e",
     "packages": [
         {
             "name": "barryvdh/laravel-cors",
@@ -2014,6 +2014,48 @@
                 "shell"
             ],
             "time": "2016-03-09 05:03:14"
+        },
+        {
+            "name": "skautis/skautis",
+            "version": "v1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/skaut/Skautis.git",
+                "reference": "a8ba0b5e5a644b9da94797d869b26c660b7974ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/skaut/Skautis/zipball/a8ba0b5e5a644b9da94797d869b26c660b7974ae",
+                "reference": "a8ba0b5e5a644b9da94797d869b26c660b7974ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.8.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SkautIS": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "František Hána",
+                    "homepage": "http://sinacek.cz"
+                }
+            ],
+            "description": "Library for API calls to SkautIS",
+            "homepage": "https://github.com/sinacek/SkautIS",
+            "keywords": [
+                "api",
+                "skautis"
+            ],
+            "time": "2014-11-26 15:10:23"
         },
         {
             "name": "swiftmailer/swiftmailer",

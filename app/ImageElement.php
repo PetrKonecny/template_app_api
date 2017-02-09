@@ -13,7 +13,7 @@ class ImageElement extends Element {
 
     public function toHtml($instanceId){        
         return 
-        "<img style='position: absolute; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2).";' src='/img/".$this->image->image_key.".".$this->image->extension.";'>";
+        "<img style='position: absolute; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2).";' src='".env('APP_URL')."/img/".$this->image->image_key.".".$this->image->extension."'>";
     }
 
 }

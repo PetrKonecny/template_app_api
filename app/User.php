@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Template;
+use App\TemplateInstance;
 
 class User extends Authenticatable
 {
@@ -12,7 +14,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'token_id', 'id'
     ];
 
     /**
@@ -23,4 +25,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    public function templates(){
+        $this->hasMany(Template::class);
+    }
+
+    public function templateInstances(){
+        $this->hasMany(TemplateInstance::class);
+    }
+
 }

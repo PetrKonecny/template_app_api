@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Template;
 use App\Content;
+use App\User;
 
 class TemplateInstance extends Model {
     
@@ -12,6 +13,10 @@ class TemplateInstance extends Model {
    
      public function template(){
         return $this->belongsTo(Template::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
     
     public function contents(){

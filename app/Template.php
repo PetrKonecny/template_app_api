@@ -3,14 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class Template extends Model {
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','public'];
     
     protected static function boot() {
         parent::boot();
 
+        
         static::deleting(function($template) { // before delete() method call this
              $template->templateInstances()->delete();
              // do the rest of the cleanup...
@@ -19,6 +21,10 @@ class Template extends Model {
     
     public function pages() {
         return $this->hasMany(Page::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
     
     public function templateInstances() {

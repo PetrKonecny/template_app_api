@@ -3,52 +3,78 @@
 namespace App\Http\Controllers;
 use App\Services\TemplateInstanceService;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
+use App\TemplateInstance;
 
 class TemplateInstanceController extends Controller
 {
     
     public function __construct(TemplateInstanceService $service) {
-        $this->templateInstanceService = $service;
+        $this->service = $service;
     }
     
     
     public function index() {
-        return $this->templateInstanceService->getAll();
+        return $this->service->getAll();
     }
     
-    public function show($templateId) {
-        $templateInstance = $this->templateInstanceService->findById($templateId);
-        return $templateInstance;
+    public function show(TemplateInstance $templateInstance) {
+        if(Auth::User()->can('show',$templateInstance)){
+            $templateInstance = $this->service->findById($templateInstance->id);
+            return $templateInstance;
+        }else{
+            abort(401);
+        }
     }
     
     public function store() {
-        $data = Input::all();
-        $this->templateInstanceService->createTemplateInstance($data);
+        if(Auth::user()->can('create',TemplateInstance::class)){
+            $data = Input::all();
+            $this->service->createTemplateInstance($data);
+        }else{
+            abort(401);
+        }
         
     }
     
-    public function update(){
-        $data = Input::all();
-        $templateInstance = $this->templateInstanceService->findById(Input::get('id',0));
-        $this->templateInstanceService->updateTemplateInstance($templateInstance,$data);
+    public function update(TemplateInstance $templateInstance){
+        if(Auth::user()->can('update',$templateInstance)){
+            $data = Input::all();
+            $templateInstance = $this->service->findById($templateInstance->id);
+            $this->service->updateTemplateInstance($templateInstance,$data);
+        }else{
+            abort(401);
+        }
     }
     
-    public function destroy($templateId) {
-        $this->templateInstanceService->deleteTemplateInstance($templateId);
+    public function destroy(TemplateInstance $templateInstance) {
+        if(Auth::user()->can('delete',$templateInstance)){
+            $this->service->deleteTemplateInstance($templateInstance->id);
+        }else{
+            abort(401);
+        }
     }
     
-    public function getAsHtml($templateId){
-        $templateInstance = $this->templateInstanceService->findById($templateId);
-        echo $templateInstance->toHtml();
+    public function getAsHtml(TemplateInstance $templateInstance){
+        if(Auth::User()->can('show',$templateInstance)){
+            $templateInstance = $this->service->findById($templateInstance->id);
+            echo $templateInstance->toHtml();
+        }else{
+            abort(401);
+        }
 
     }
     
-    public function getAsPdf($templateId){       
+    public function getAsPdf(TemplateInstance $templateInstance){       
         /*$pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($this->templateInstanceService->findById($templateId)->toHtml());
+        $pdf->loadHTML($this->service->findById($templateId)->toHtml());
         return $pdf->inline();*/
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadHTML($this->templateInstanceService->findById($templateId)->toHtml());
-        return @$pdf->setPaper('A4', '[portrait')->stream();
+        if(Auth::User()->can('show',$templateInstance)){
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->loadHTML($this->service->findById($templateInstance->id)->toHtml());
+            return @$pdf->setPaper('A4', '[portrait')->stream();
+        }else{
+            abort(401);
+        }
     }
 }

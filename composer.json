@@ -13,7 +13,8 @@
         "intervention/image": "^2.3",
         "league/glide-laravel": "^1.0",
         "barryvdh/laravel-snappy": "^0.3.0",
-        "barryvdh/laravel-dompdf": "^0.7.0"
+        "barryvdh/laravel-dompdf": "^0.7.0",
+        "skautis/skautis": "1.2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
