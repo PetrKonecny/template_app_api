@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Image;
 use App\User;
+use App\Template;
+use App\TemplateInstance;
 use Illuminate\Support\Facades\Storage;
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -46,6 +48,18 @@ class UserService {
     	$user = new User($array);
     	$user->save();
     	return $user;
+    }
+
+    public function getUserTemplates($user){
+        return Template::where('user_id', $user->id)->get();
+    }
+
+    public function getUserTemplateInstances($user){
+        return TemplateInstance::where('user_id',$user->id)->get();
+    }
+
+    public function getAll(){
+        return User::all();
     }
 
     public function skautISLogin($token_id, $role_id, $group_id, $skautisInst){

@@ -17,7 +17,7 @@ class TemplateService
     }
 
     public function getPublicTemplates(){
-        return Template::where('public',true)->get();
+        return Template::with('tagged')->where('public',true)->get();
     }
    
 
@@ -32,6 +32,7 @@ class TemplateService
     /*TODO: should be done better using interface tables */ 
     public function findByIdNested($id){
         $template =  Template::with('pages','pages.elements')->find($id);
+        $template->tagged;
         foreach($template->pages as $page){
             foreach($page->elements as $element){
                 if($element->type == 'text_element'){
@@ -54,11 +55,14 @@ class TemplateService
         return $template;
     }
     
-    public function createTemplate($array){
+    public function createTemplate($array){       
         $pageService = new PageService();
         $template = new Template($array);
         $template->user()->associate(Auth::user());
         $template->save();
+        if(isset($array['tagged'])){
+            $template->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
+        }
         if(isset($array['pages'])){
             foreach($array['pages'] as $page){
                 $page = $pageService->createPage($page);
@@ -76,7 +80,9 @@ class TemplateService
     public function updateTemplate($template, $array){
         $pageService = new PageService();
         $template->name = $array['name'];
-        
+        if(isset($array['tagged'])){
+            $template->retag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
+        }
         foreach ($template->pages as $page3){
             $delete = true;
             foreach($array['pages'] as $page4){

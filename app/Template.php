@@ -5,7 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 
-class Template extends Model {
+class Template extends Model  {
+    use \Conner\Tagging\Taggable;
 
     protected $fillable = ['name','public'];
     

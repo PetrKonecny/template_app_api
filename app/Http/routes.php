@@ -27,6 +27,22 @@ Route::get('user', [
     'uses' => 'UserController@getCurrent'
 ]);
 
+Route::get('user/{user}/templates', [
+	'uses' => 'UserController@getTemplates'
+]);
+
+Route::get('user/{user}/template-instances', [
+	'uses' => 'UserController@getTemplateInstances'
+]);
+
+Route::get('user',[
+	'uses' => 'UserController@getAll'
+]);
+
+Route::get('user/{user}',[
+	'uses' => 'UserController@show'
+]);
+
 Route::resource('template', 'TemplateController');
 Route::resource('templateInstance', 'TemplateInstanceController');
 Route::resource('image', 'ImageController');

@@ -158,6 +158,7 @@ return [
         Barryvdh\Snappy\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Conner\Tagging\Providers\TaggingServiceProvider::class,
     ],
 
     /*

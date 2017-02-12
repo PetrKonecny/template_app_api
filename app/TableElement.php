@@ -39,7 +39,11 @@ class TableElement extends Element {
                 $cellBorderWidth="";
                 $cellBorderStyle="";
                 if(property_exists($cell, "font") && $cell->font != null){
-                    $font = "font-family: font".$cell->font->id."; ";                  
+                    if(property_exists($cell->font, 'id')){
+                        $font = "font-family: font".$cell->font->id."; ";
+                    }else{
+                        $font = "font-family: ".$cell->font->name."; ";
+                    }                  
                 }     
                 if(property_exists($cell, "font_size")){
                     $fontSize = "font-size: ".$cell->font_size."px; ";
@@ -96,12 +100,14 @@ class TableElement extends Element {
         
         $fonts = array_unique($fonts, SORT_REGULAR);
         foreach($fonts as $font){
-            $string .= "<style>";
-                $string .= "@font-face {";
-                $string .= " font-family: '" ."font" . $font->id . "';";
-                $string .= " src: url('"."http://localhost:8080/font/".$font->id ."/file" ."') format('truetype');";
-                $string .= "}";
-            $string .= "</style>";
+            if(property_exists($font, 'id')){
+                $string .= "<style>";
+                    $string .= "@font-face {";
+                    $string .= " font-family: '" ."font" . $font->id . "';";
+                    $string .= " src: url('".env('APP_URL')."/font/".$font->id ."/file" ."') format('truetype');";
+                    $string .= "}";
+                $string .= "</style>";
+            }
         }
         return $string;
     }
