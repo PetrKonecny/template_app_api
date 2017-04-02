@@ -11,6 +11,7 @@ class TemplateInstanceController extends Controller
     
     public function __construct(TemplateInstanceService $service) {
         $this->service = $service;
+        $this->middleware('auth');
     }
     
     
@@ -71,8 +72,13 @@ class TemplateInstanceController extends Controller
         return $pdf->inline();*/
         if(Auth::User()->can('show',$templateInstance)){
             $pdf = \App::make('dompdf.wrapper');
+            $page = $templateInstance->template()->first()->pages()->first();
             $pdf->loadHTML($this->service->findById($templateInstance->id)->toHtml());
-            return @$pdf->setPaper('A4', '[portrait')->stream();
+            $size = 'A4';
+            if($page->width > 100 && $page->height > 100){
+                $size = [0,0,$page->width,$page->height];
+            }
+            return @$pdf->setPaper($size)->stream();
         }else{
             abort(401);
         }

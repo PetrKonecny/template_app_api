@@ -30,6 +30,10 @@ class TemplateController extends Controller {
             abort(401);
         }
     }
+
+    public function search(){
+        return $this->service->search(Input::get('query'));
+    }
     
     public function store () {
         if(Auth::user()->can('create',Template::class)){

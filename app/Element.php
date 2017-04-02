@@ -9,7 +9,7 @@ use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 class Element extends Model {
     
     
-    protected $fillable = ['width','height','positionX','positionY','font_size','background_color','text_color'];
+    protected $fillable = ['width','height','positionX','positionY','positionZ','font_size','background_color','text_color','opacity'];
 
     use SingleTableInheritanceTrait;
 
@@ -42,8 +42,9 @@ class Element extends Model {
         if($content != null){
             $contentHtml = $content->toHtml();
         }
+        $opacity = $this->opacity > 0 ? $this->opacity/100 : 100;
         return 
-        "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2)."; font-size: 12pt;'>"
+        "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; font-size: 12pt;' opacity: ".$opacity." z-index: ".$this->positionZ.";>"
         .$contentHtml
         ."</div>";
     }

@@ -13,12 +13,12 @@ class TableElement extends Element {
     public function toHtml($instanceId){
         $rows = json_decode($this->rows);
         $content_rows = json_decode($this->contentsForInstance($instanceId)->first()->rows);
-        $string = $this->initFonts($rows);
         $total_width = 0;
         foreach($rows[0]->cells as $cell){
             $total_width += $cell->width;
         }
-        $string .= "<table style='position: absolute; table-layout: fixed; border: 1px solid black; border-collapse: collapse; width:".$total_width."px; left:".$this->positionX."px; top:".$this->positionY."px;'><tbody>";
+        $string = "";
+        $string .= "<table style='position: absolute; table-layout: fixed; border: 1px solid black; border-collapse: collapse; width:".$total_width."px; left:".$this->positionX."px; top:".$this->positionY."px;' z-index: ".$this->positionZ.";><tbody>";
         foreach($rows as $y=>$row){
             $string .= "<tr style=' height:".$row->height."px;'>";
             foreach($row->cells as $x=>$cell){
@@ -84,31 +84,6 @@ class TableElement extends Element {
             $string .= "</tr>";
         }
         $string .= "</tbody></table>";
-        return $string;
-    }
-    
-    private function initFonts($rows){
-        $fonts = [];
-        $string = "";
-        foreach($rows as $row){
-            foreach($row->cells as $cell){
-                if(property_exists($cell,"font")){
-                    array_push($fonts,$cell->font);
-                }
-            }
-        }
-        
-        $fonts = array_unique($fonts, SORT_REGULAR);
-        foreach($fonts as $font){
-            if(property_exists($font, 'id')){
-                $string .= "<style>";
-                    $string .= "@font-face {";
-                    $string .= " font-family: '" ."font" . $font->id . "';";
-                    $string .= " src: url('".env('APP_URL')."/font/".$font->id ."/file" ."') format('truetype');";
-                    $string .= "}";
-                $string .= "</style>";
-            }
-        }
         return $string;
     }
 }

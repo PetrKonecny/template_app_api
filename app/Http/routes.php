@@ -43,7 +43,12 @@ Route::get('user/{user}',[
 	'uses' => 'UserController@show'
 ]);
 
+Route::get('template/search',[
+    'uses' => 'TemplateController@search'
+]);
+
 Route::resource('template', 'TemplateController');
+
 Route::resource('templateInstance', 'TemplateInstanceController');
 Route::resource('image', 'ImageController');
 Route::get('templateInstance/{templateInstance}/html', [
@@ -58,6 +63,12 @@ Route::resource('font', 'FontController');
 Route::get('font/{id}/file', [
     'uses' => 'FontController@getFile'
 ]);
+
+Route::resource('content', 'ContentController');
+
+Route::resource('element', 'ElementController');
+
+Route::resource('page', 'PageController');
 
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
     return $server->getImageResponse($path, $request->all());

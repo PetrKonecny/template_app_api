@@ -11,9 +11,10 @@ class ImageElement extends Element {
         return $this->BelongsTo(Image::class);
     }
 
-    public function toHtml($instanceId){        
+    public function toHtml($instanceId){
+        $opacity = $this->opacity > 0 ? $this->opacity/100 : 1;        
         return 
-        "<img style='position: absolute; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".($this->id + 2).";' src='".env('APP_URL')."/img/".$this->image->image_key.".".$this->image->extension."'>";
+        "<img style='position: absolute; width: ".$this->width."px; opacity: ".$opacity."; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".$this->positionZ.";' src='http://$_SERVER[HTTP_HOST]/img/".$this->image->image_key.".".$this->image->extension."'>";
     }
 
 }

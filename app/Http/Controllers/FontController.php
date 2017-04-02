@@ -9,8 +9,7 @@ class FontController extends Controller
     public function __construct(FontService $service){
         $this->fontService = $service;
     }
-    
-    
+     
     public function index(){
         return $this->fontService->getAll();
     }

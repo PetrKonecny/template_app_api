@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
-    protected $fillable = ['elements'];
+    protected $fillable = ['elements','width','height'];
 
     public function template() {
         return $this->belongsTo(Template::class);
@@ -18,7 +18,7 @@ class Page extends Model
     
     public function toHtml($instanceId) {
         return 
-        "<div style='position: relative; width: 100%; height: 100%; background-color: grey;'>"
+        "<div style='position: relative; width: 100%; height: 100%;'>"
         .$this->elementsToHtml($instanceId)
         ."</div>";
     }

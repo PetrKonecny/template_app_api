@@ -8,6 +8,7 @@ use App\TextElement;
 use App\Element;
 use App\Services\PageService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TemplateService
 {
@@ -75,6 +76,14 @@ class TemplateService
     public function deleteTemplate($id){
         $template = Template::find($id);
         $template->delete();
+    }
+
+    public function search($query){
+        $ids= DB::table('templates')->leftJoin('tagging_tagged',function($join){
+            $join->on('templates.id','=','tagging_tagged.taggable_id')->where('tagging_tagged.taggable_type','=','App\Template');
+        })->select("templates.id")
+        ->where('tagging_tagged.tag_slug','like',$query)->orWhere('name','like',$query)->get();
+        return Template::with('tagged')->find(array_map(function($i){return $i->id;},$ids));
     }
     
     public function updateTemplate($template, $array){

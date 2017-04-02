@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use App\Font;
 
 class Template extends Model  {
     use \Conner\Tagging\Taggable;
@@ -37,18 +38,31 @@ class Template extends Model  {
         "<!DOCTYPE html>"
         ."<html>"
             ."<head>"
+            .'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'
             ."<style>"
             ."@page { margin: 0px; }"
             ."body { margin: 0px; }"
             ."</style>"
             ."</head>"
             ."<body>"
-            ."<style>"
-            ."@font-face { font-family: 'font1'; src: url('http://sablony.skauting.cz/font/1/file');  font-style: normal; font-weight: bold; format('truetype');}"
-            ."</style>"
+            .$this->loadCustomFonts()
             .$this->pagesToHtml($instanceId)
             ."</body>"
         ."</html>";
+    }
+
+    public function loadCustomFonts(){
+        $fonts = Font::all();
+        $string = "";
+        foreach ($fonts as $font) {
+            $string .= "<style>";
+                $string .= "@font-face {";
+                $string .= "font-family: '" ."font" . $font->id . "';";
+                $string .= "src: url('"."/font/".$font->id ."/file" ."'); format('truetype');";
+                $string .= "}";
+            $string .= "</style>";
+        }
+        return $string;
     }
     
     public function pagesToHtml($instanceId){
