@@ -34,7 +34,6 @@ class ElementService {
     }
     
     public function createElement($array){
-        echo (json_encode($array));
         $contentService = new ContentService();
         if ($array['type'] == 'text_element'){
             $element = new TextElement($array);

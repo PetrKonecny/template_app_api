@@ -52,13 +52,14 @@ class Template extends Model  {
     }
 
     public function loadCustomFonts(){
+        $link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]";        
         $fonts = Font::all();
         $string = "";
         foreach ($fonts as $font) {
             $string .= "<style>";
                 $string .= "@font-face {";
                 $string .= "font-family: '" ."font" . $font->id . "';";
-                $string .= "src: url('"."/font/".$font->id ."/file" ."'); format('truetype');";
+                $string .= "src: url('".$link."/font/".$font->id ."/file" ."'); format('truetype');";
                 $string .= "}";
             $string .= "</style>";
         }

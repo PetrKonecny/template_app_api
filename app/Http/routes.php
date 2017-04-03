@@ -19,11 +19,11 @@ Route::get('login/{id}', [
     'uses' => 'UserController@login'
 ]);
 
-Route::get('logout', [
+Route::get('user/logout', [
     'uses' => 'UserController@logout'
 ]);
 
-Route::get('user', [
+Route::get('user/current', [
     'uses' => 'UserController@getCurrent'
 ]);
 

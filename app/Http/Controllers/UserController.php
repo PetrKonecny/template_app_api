@@ -20,8 +20,7 @@ class UserController extends Controller
 		echo json_encode($data);
 	}*/
 
-	public function skautISLogin(SkautIS $skautis){
-		$service = new UserService();
+	public function skautISLogin(SkautIS $skautis, UserService $service){
 		$user = $service->skautISLogin(Input::get('skautIS_Token'), Input::get('skautIS_IDRole'), Input::get('skautIS_IDUnit'),$skautis);
 		Auth::login($user);
 		return view('index_page');
@@ -32,8 +31,16 @@ class UserController extends Controller
 		Auth::login($user);
 	}
 
-	public function logout(){
+	public function logout(SkautIS $skautis){
 		Auth::logout();
+	}
+
+	public function skautISLogout(User $user,SkautIS $skautis){
+		if(Auth::check()){
+			$token_id = Auth::user()->token_id;
+			Auth::logout();
+			return redirect ('https://test-is.skaut.cz/Login/LogOut.aspx?appid=291fb631-97cf-4a2e-ad6b-1b3b14b9d9a2&token='.$token_id);
+		}	
 	}
 
 	public function getCurrent(){

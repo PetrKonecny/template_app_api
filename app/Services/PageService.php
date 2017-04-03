@@ -30,7 +30,7 @@ class PageService {
     
     public function createPage($array){
         $elementService = new ElementService;
-        $page = new Page();
+        $page = new Page($array);
         $page->save();
         if(isset($array['elements'])){
             foreach($array['elements'] as $element){

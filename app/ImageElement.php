@@ -12,9 +12,10 @@ class ImageElement extends Element {
     }
 
     public function toHtml($instanceId){
-        $opacity = $this->opacity > 0 ? $this->opacity/100 : 1;        
+        $opacity = $this->opacity > 0 ? $this->opacity/100 : 1;
+        $link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]";        
         return 
-        "<img style='position: absolute; width: ".$this->width."px; opacity: ".$opacity."; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".$this->positionZ.";' src='http://$_SERVER[HTTP_HOST]/img/".$this->image->image_key.".".$this->image->extension."'>";
+        "<img style='position: absolute; width: ".$this->width."px; opacity: ".$opacity."; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; z-index: ".$this->positionZ.";' src='".$link."/img/".$this->image->image_key.".".$this->image->extension."'>";
     }
 
 }

@@ -76,7 +76,10 @@ class TemplateInstanceController extends Controller
             $pdf->loadHTML($this->service->findById($templateInstance->id)->toHtml());
             $size = 'A4';
             if($page->width > 100 && $page->height > 100){
-                $size = [0,0,$page->width,$page->height];
+                $width = $page->width * 0.0393701 * 72;
+                $height = $page->height * 0.0393701 * 72;
+                $size = [0,0,$width,$height]
+                ;
             }
             return @$pdf->setPaper($size)->stream();
         }else{

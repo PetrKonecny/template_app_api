@@ -16,7 +16,8 @@ class ImageContent extends Content {
         if($this->image == null){
             return "";
         }else{
-            return "<div style='position: absolute; left:".$this->left."px; top:".$this->top."px;'><img style='width:".$this->width."px ; height: ".$this->height."px;' src='".env('APP_URL')."/img/".$this->image->image_key.".".$this->image->extension."'></div>";
+            $link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]";        
+            return "<div style='position: absolute; left:".$this->left."px; top:".$this->top."px;'><img style='width:".$this->width."px ; height: ".$this->height."px;' src='".$link."/img/".$this->image->image_key.".".$this->image->extension."'></div>";
         }
     }
     

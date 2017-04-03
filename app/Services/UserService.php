@@ -78,6 +78,9 @@ class UserService {
     	return $user;
     }
 
+    public function skautISLogout($skautis){
+    }
+
     public function updateUser($user,$array){
     	
     }
