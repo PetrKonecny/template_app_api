@@ -70,6 +70,12 @@ Route::resource('element', 'ElementController');
 
 Route::resource('page', 'PageController');
 
+Route::resource('album', 'AlbumController');
+
+Route::post('album/{id}/upload', [
+    'uses' => 'AlbumController@uploadTo'
+]);
+
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
     return $server->getImageResponse($path, $request->all());
 });

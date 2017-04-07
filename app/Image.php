@@ -3,14 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Content;
+use App\Album;
 
 class Image extends Model
 {
-        protected $fillable = ['image','name'];
-        
-        public function imageContents(){
-            return $this->hasMany(ImageContent::class);
-        }
+    protected $fillable = ['image','name'];
+    
+    public function album(){
+    	return $this->belongsTo(Album::class);
+    }
 
 }

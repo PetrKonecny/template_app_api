@@ -31,7 +31,8 @@ class TemplateInstanceController extends Controller
     public function store() {
         if(Auth::user()->can('create',TemplateInstance::class)){
             $data = Input::all();
-            $this->service->createTemplateInstance($data);
+            $templateInstance = $this->service->createTemplateInstance($data);
+            return $this->service->findById($templateInstance->id);
         }else{
             abort(401);
         }
@@ -43,6 +44,7 @@ class TemplateInstanceController extends Controller
             $data = Input::all();
             $templateInstance = $this->service->findById($templateInstance->id);
             $this->service->updateTemplateInstance($templateInstance,$data);
+            return $this->service->findById($templateInstance->id);
         }else{
             abort(401);
         }

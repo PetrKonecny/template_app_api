@@ -30,6 +30,7 @@ class ImageService {
         $image->save();
         $fileName = $image->image_key.'.'.$extension;
         $file->move($destinationPath, $fileName);
+        return $image;
     }
     
     public function deleteImage($image){

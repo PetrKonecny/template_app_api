@@ -28,14 +28,31 @@ $factory->define(App\Template::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Page::class, function (Faker\Generator $faker) {
     return [
+        'width' => rand(0, 1000),
+        'height' => rand(0, 1000),
     ];
 });
 
 $factory->define(App\TextElement::class, function (Faker\Generator $faker) {
     return [
+        'type' => 'text_element',
         'width' => rand(0, 300),
         'height' => rand(0, 300),
         'positionX' => rand(0, 300),
         'positionY' => rand(0, 300),
+    ];
+});
+
+$factory->define(App\Album::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'public' => true
+    ];
+});
+
+$factory->define(App\Image::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'image_key' => rand(0,1000000),
     ];
 });

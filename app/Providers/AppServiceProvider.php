@@ -65,5 +65,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('Services\ElementService',function($app){
             return new Services\ElementService();
         });
+
+        $this->app->singleton('Services\AlbumService',function($app){
+            return new Services\AlbumService();
+        });
     }
 }

@@ -9,7 +9,8 @@ class Font extends Model
 {
     protected $fillable = [];
         
-        public function textElements(){
-            return $this->hasMany(TextElement::class);
-        }
+    public function textElements(){
+        return $this->hasMany(TextElement::class);
+    }
+    
 }

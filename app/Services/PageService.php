@@ -66,7 +66,7 @@ class PageService {
         foreach ($array['elements'] as $element){
             if(isset($element['id'])){
                 $elementService->updateElement($elementService->findById($element['id']), $element);
-            }else{
+            }else if(isset($element['type'])){
                 $element2 = $elementService->createElement($element);
                 $page->elements()->save($element2);
             }

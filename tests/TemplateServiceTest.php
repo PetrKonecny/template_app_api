@@ -39,7 +39,7 @@ class TemplateServiceTest extends TestCase
     public function testBasicDelete() {
 
         $template = $this->service->createTemplate((array) factory(App\Template::class)->make());
-        $this->service->deleteTemplate($template);
+        $this->service->deleteTemplate($template->id);
         $this->assertNull($this->service->findById($template->id));
     }
     
@@ -78,7 +78,8 @@ class TemplateServiceTest extends TestCase
         foreach($template2-> pages as $page){
             array_push($array,$page);
         }
-        array_push($array, factory(App\Page::class)->make());
+        $page = factory(App\Page::class)->make();
+        array_push($array, ['width'=>$page->width,'height'=> $page->height]);
         $template2->pages = $array;
         $this->service->updateTemplate($template, $template2);
         $this->assertEquals(5, $this->service->findById($template->id)->pages->count());

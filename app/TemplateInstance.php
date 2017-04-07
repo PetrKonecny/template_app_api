@@ -8,7 +8,8 @@ use App\Content;
 use App\User;
 
 class TemplateInstance extends Model {
-    
+    use \Conner\Tagging\Taggable;
+
     protected $fillable = ['name'];
    
      public function template(){

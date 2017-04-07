@@ -52,6 +52,8 @@ class ElementService {
         else if($array['type'] == 'table_element'){
             $array['rows'] = json_encode($array['rows']);
             $element = new TableElement($array);
+        }else{
+            return;
         }
         $element->save();
         if (isset ($array['content'])) {

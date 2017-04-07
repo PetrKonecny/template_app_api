@@ -43,7 +43,7 @@ class PageServiceTest extends TestCase
         $page->elements;
         $page2 = $page->replicate();
         $array = [];
-        foreach($page2-> elements as $element){
+        foreach($page2->elements as $element){
             array_push($array,$element);
         }
         array_splice($array, 1,1);
@@ -58,10 +58,11 @@ class PageServiceTest extends TestCase
         $page->elements;
         $page2 = $page->replicate();
         $array = [];
-        foreach($page2-> elements as $element){
+        foreach($page2->elements as $element){
             array_push($array,$element);
         }
-        array_push($array, factory(App\Page::class)->make());
+        $element = factory(App\TextElement::class)->make();
+        array_push($array, ['type' => $element->type, 'width'=>$element->width,'height'=> $element->height,'positionX'=>$element->positionX,'positionY'=>$element->positionY]);
         $page2->elements = $array;
         $this->service->updatePage($page, $page2);
         $this->assertEquals(5, $this->service->findById($page->id)->elements->count());

@@ -59,7 +59,9 @@ class TemplateService
     public function createTemplate($array){       
         $pageService = new PageService();
         $template = new Template($array);
-        $template->user()->associate(Auth::user());
+        if(Auth::user() !== null){
+            $template->user()->associate(Auth::user());
+        }
         $template->save();
         if(isset($array['tagged'])){
             $template->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
@@ -75,7 +77,9 @@ class TemplateService
     
     public function deleteTemplate($id){
         $template = Template::find($id);
-        $template->delete();
+        if($template != null){
+            $template->delete();
+        }
     }
 
     public function search($query){

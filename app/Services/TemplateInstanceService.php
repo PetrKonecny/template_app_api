@@ -15,12 +15,13 @@ use Illuminate\Support\Facades\Auth;
 class TemplateInstanceService {
 
     public function getAll(){
-        return TemplateInstance::all();
+        return TemplateInstance::with('tagged')->get();
     }
    
     public function findById($id)
     {
         $templateInst = TemplateInstance::with('contents')->find($id);
+        $templateInst->tagged;
         foreach($templateInst->contents as $content){
             if($content->type == 'image_content'){
                 $content->image;
@@ -43,6 +44,9 @@ class TemplateInstanceService {
         $templateInst->template()->associate($template);
         $templateInst->user()->associate(Auth::user());
         $templateInst->save();
+        if(isset($array['tagged'])){
+            $templateInst->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
+        }
         foreach($array['contents'] as $content) {
             if(isset($content)){
                 $content2 = $contentService->createContent($content);
@@ -51,11 +55,15 @@ class TemplateInstanceService {
                 $templateInst->contents()->save($content2);
             }
         }
+        return $templateInst;
     }
     
     public function updateTemplateInstance($templateInst, $array){
         $contentService = new ContentService();
         $templateInst->name = $array['name'];
+        if(isset($array['tagged'])){
+            $templateInst->retag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
+        }
         $templateInst->save();        
         foreach($array['contents'] as $content) {
             if(isset($content)){
@@ -68,7 +76,8 @@ class TemplateInstanceService {
                 $content2->element()->associate($element);
                 $templateInst->contents()->save($content2);
             }
-        }    
+        }
+        return $temlateInst;    
     }
    
 }
