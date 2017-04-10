@@ -44,7 +44,11 @@ class UserController extends Controller
 	}
 
 	public function getCurrent(){
-		return Auth::user();
+		if(Auth::check()){
+			return Auth::user();
+		}else{
+		 	abort(404);
+		}
 	}
 
 	public function getAll(UserService $service){

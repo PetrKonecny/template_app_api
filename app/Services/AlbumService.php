@@ -42,6 +42,13 @@ class AlbumService {
         return $oldAlbum;
     }
 
+    public function moveImagesToAlbum($album, $images){
+        $imageService = new ImageService();
+        $ids = array_map(function($image){return $image['id']; }, $images);
+        Image::whereIn('id', $ids)->update(["album_id" => $album->id]);
+        return $album;
+    }
+
     public function addNewImageToAlbum($album,$image){
         $imageService = new ImageService();
         $image = $imageService->createImage($image);

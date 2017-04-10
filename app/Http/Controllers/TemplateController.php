@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests;
 use App\Template;
+use App\User;
 use App\Services\TemplateService;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,21 @@ class TemplateController extends Controller {
     
     
     public function index() {
-            return $this->service->getPublicTemplates();
+        if(Auth::user()->can('getAll')){
+            return $this->service->getAll();
+        }
+    }
+
+    public function getUserTemplates($id){
+        if(Auth::user()->id == $id){
+            return $this->service->getTemplatesForUser(User::find($id));
+        }else{
+            abort(401);
+        }
+    }
+
+    public function getPublicTemplates(){
+        return $this->service->getPublicTemplates();
     }
     
     public function show(Template $template) {

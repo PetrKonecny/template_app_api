@@ -5,6 +5,7 @@ use App\Services\TemplateInstanceService;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use App\TemplateInstance;
+use App\User;
 
 class TemplateInstanceController extends Controller
 {
@@ -23,6 +24,14 @@ class TemplateInstanceController extends Controller
         if(Auth::User()->can('show',$templateInstance)){
             $templateInstance = $this->service->findById($templateInstance->id);
             return $templateInstance;
+        }else{
+            abort(401);
+        }
+    }
+
+    public function getUserTemplateInstances($id){
+        if(Auth::user()->id == $id){
+            return $this->service->getTemplateInstancesForUser(User::find($id));
         }else{
             abort(401);
         }

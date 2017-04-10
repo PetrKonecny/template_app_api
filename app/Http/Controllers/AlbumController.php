@@ -39,6 +39,11 @@ class AlbumController extends Controller
         $image = Input::file("file");
         $this->albumService->addNewImageToAlbum($album,$image);
     }
+
+    public function moveTo($id){
+        $album = $this->albumService->findById($id);
+        $this->albumService->moveImagesToAlbum($album,Input::all());
+    }
     
     public function remove(Album $album){
         $this->albumService->deleteAlbum($album);

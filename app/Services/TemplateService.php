@@ -18,12 +18,12 @@ class TemplateService
     }
 
     public function getPublicTemplates(){
-        return Template::with('tagged')->where('public',true)->get();
+        return Template::where('public',true)->with('tagged')->get();
     }
    
 
     public function getTemplatesForUser($user){
-        return Template::where('user_id',$user->id)-get();
+        return Template::where('user_id',$user->id)->with('tagged')->get();
     }
 
     public function findById($id){

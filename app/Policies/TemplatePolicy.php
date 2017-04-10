@@ -20,6 +20,18 @@ class TemplatePolicy
         //
     }
 
+    public function getAll(){
+        return false;
+    }
+
+    public function getPublic(){
+        return true;
+    }
+
+    public function getForUser(User $user, $id){
+        return $user->id === $id;
+    }
+
     public function update(User $user, Template $template)
     {
         return $user->id === $template->user_id;

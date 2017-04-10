@@ -32,6 +32,10 @@ class TemplateInstanceService {
         }
         return $templateInst;
     }
+
+    public function getTemplateInstancesForUser($user){
+        return TemplateInstance::where('user_id',$user->id)->with('tagged')->get();
+    }
     
     public function deleteTemplateInstance($id){
         TemplateInstance::destroy($id);

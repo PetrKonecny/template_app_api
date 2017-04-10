@@ -30,8 +30,8 @@ class ImageController extends Controller
         $this->imageService->createImage($image);
     }
     
-    public function delete($image){
-        $image->delete();
+    public function destroy(Image $image){
+        $this->imageService->deleteImage($image);
     }
     
     

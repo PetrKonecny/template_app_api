@@ -28,7 +28,8 @@ class TextElement extends Element {
             $family = "font-family: font".$this->font->id.";";
         }
         $opacity = $this->opacity > 0 ? $this->opacity/100 : 1;
-        $string .= '<div style="'.$family.' position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px;  font-size: '.$this->font_size.'px; background-color: '.$this->background_color.'; color: '.$this->text_color.'; opacity: '.$opacity.';">';    
+        $fontSize = $this->font_size > 0 ? $this->font_size : 12;
+        $string .= '<div style="'.$family.' position: absolute; overflow: hidden; width: '.$this->width.'px; height: '.$this->height.'px; top: '.$this->positionY.'px; left: '.$this->positionX.'px;  font-size: '.$fontSize.'px; background-color: '.$this->background_color.'; color: '.$this->text_color.'; opacity: '.$opacity.';">';    
         $string .= $contentHtml;
         $string .= "</div>";
         return $string;

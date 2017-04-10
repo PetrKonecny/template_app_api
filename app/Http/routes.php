@@ -47,7 +47,18 @@ Route::get('template/search',[
     'uses' => 'TemplateController@search'
 ]);
 
+
+Route::get('template/public',[
+    'uses' => 'TemplateController@getPublicTemplates'
+]);
+
+
+Route::get('template/user/{id}',[
+    'uses' => 'TemplateController@getUserTemplates'
+]);
+
 Route::resource('template', 'TemplateController');
+
 
 Route::resource('templateInstance', 'TemplateInstanceController');
 Route::resource('image', 'ImageController');
@@ -58,6 +69,11 @@ Route::get('templateInstance/{templateInstance}/html', [
 Route::get('templateInstance/{templateInstance}/pdf', [
     'uses' => 'TemplateInstanceController@getAsPdf'
 ]);
+
+Route::get('templateInstance/user/{id}',[
+    'uses' => 'TemplateInstanceController@getUserTemplateInstances'
+]);
+
 Route::resource('font', 'FontController');
 
 Route::get('font/{id}/file', [
@@ -74,6 +90,10 @@ Route::resource('album', 'AlbumController');
 
 Route::post('album/{id}/upload', [
     'uses' => 'AlbumController@uploadTo'
+]);
+
+Route::post('album/{id}/move', [
+    'uses' => 'AlbumController@moveTo'
 ]);
 
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
