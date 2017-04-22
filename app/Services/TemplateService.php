@@ -14,7 +14,7 @@ class TemplateService
 {
     
     public function getAll(){
-        return Template::all();
+        return Template::with('tagged')->get();
     }
 
     public function getPublicTemplates(){

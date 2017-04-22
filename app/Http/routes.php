@@ -59,9 +59,13 @@ Route::get('template/user/{id}',[
 
 Route::resource('template', 'TemplateController');
 
+Route::get('template/{template}/templateInstance',[
+    'uses' => 'TemplateController@getInstancesForTemplate'
+]);
+
 
 Route::resource('templateInstance', 'TemplateInstanceController');
-Route::resource('image', 'ImageController');
+
 Route::get('templateInstance/{templateInstance}/html', [
     'uses' => 'TemplateInstanceController@getAsHtml'
 ]);
@@ -73,6 +77,7 @@ Route::get('templateInstance/{templateInstance}/pdf', [
 Route::get('templateInstance/user/{id}',[
     'uses' => 'TemplateInstanceController@getUserTemplateInstances'
 ]);
+
 
 Route::resource('font', 'FontController');
 
@@ -96,7 +101,16 @@ Route::post('album/{id}/move', [
     'uses' => 'AlbumController@moveTo'
 ]);
 
+Route::resource('image', 'ImageController');
+
+
 Route::get('img/{path}', function ($path, League\Glide\Server $server, Illuminate\Http\Request $request){
+    $split = explode('.', $path);
+    if($split[1] == 'svg'){
+        $image = Storage::get('images/'.$path);
+           return response($image, 200)
+                  ->header('Content-Type', 'image/svg+xml');
+    }
     return $server->getImageResponse($path, $request->all());
 });
 

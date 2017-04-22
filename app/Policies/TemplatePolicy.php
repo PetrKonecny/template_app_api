@@ -20,7 +20,15 @@ class TemplatePolicy
         //
     }
 
-    public function getAll(){
+    
+    public function before($user, $ability)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+    }
+
+    public function admin(){
         return false;
     }
 

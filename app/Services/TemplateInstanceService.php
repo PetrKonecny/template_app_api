@@ -81,7 +81,7 @@ class TemplateInstanceService {
                 $templateInst->contents()->save($content2);
             }
         }
-        return $temlateInst;    
+        return $templateInst;    
     }
    
 }

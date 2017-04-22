@@ -17,7 +17,11 @@ class TemplateInstanceController extends Controller
     
     
     public function index() {
-        return $this->service->getAll();
+        if(Auth::user()->can('admin',TemplateInstance::class)){
+            return $this->service->getAll();
+        }else{
+            abort(401);
+        }
     }
     
     public function show(TemplateInstance $templateInstance) {

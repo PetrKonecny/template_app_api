@@ -15,7 +15,11 @@ class TableElement extends Element {
         $content_rows = json_decode($this->contentsForInstance($instanceId)->first()->rows);
         $total_width = 0;
         foreach($rows[0]->cells as $cell){
-            $total_width += $cell->width;
+            $colspan = 1;
+            if(property_exists($cell, 'colspan')){
+                $colspan = $cell->colspan;
+            }
+            $total_width += $cell->width * $colspan;
         }
         $string = "";
         $string .= "<table style='position: absolute; table-layout: fixed; border: 1px solid black; border-collapse: collapse; width:".$total_width."px; left:".$this->positionX."px; top:".$this->positionY."px;' z-index: ".$this->positionZ.";><tbody>";

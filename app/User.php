@@ -35,4 +35,8 @@ class User extends Authenticatable
         $this->hasMany(TemplateInstance::class);
     }
 
+    public function isAdmin(){
+        return $this->admin;
+    }
+
 }

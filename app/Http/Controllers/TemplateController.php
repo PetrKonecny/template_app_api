@@ -17,16 +17,18 @@ class TemplateController extends Controller {
         $this->service = $service;
         $this->middleware('auth');
     }
-    
-    
+
+        
     public function index() {
-        if(Auth::user()->can('getAll')){
+        if(Auth::user()->can('admin',Template::class)){
             return $this->service->getAll();
+        }else{
+            abort(401);
         }
     }
 
     public function getUserTemplates($id){
-        if(Auth::user()->id == $id){
+        if(Auth::user()->id == $id || Auth::user()->admin){
             return $this->service->getTemplatesForUser(User::find($id));
         }else{
             abort(401);
@@ -36,7 +38,13 @@ class TemplateController extends Controller {
     public function getPublicTemplates(){
         return $this->service->getPublicTemplates();
     }
-    
+
+    public function getInstancesForTemplate(Template $template){
+        if(Auth::User()->can('show',$template)){
+            return $template->templateInstances;
+        }
+    }
+
     public function show(Template $template) {
         if(Auth::User()->can('show',$template)){
             $template = $this->service->findByIdNested($template->id);
