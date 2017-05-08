@@ -13,6 +13,8 @@ class ImageController extends Controller
     
     public function __construct(ImageService $service){
         $this->imageService = $service;
+        $this->imageService->setUser(Auth::user());
+        $this->middleware('auth');
     }
     
     

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Services\PageService;
+include_once '\tests\TestUtils.php';
 
 class PageServiceTest extends TestCase
 {
@@ -20,60 +21,61 @@ class PageServiceTest extends TestCase
     }
     
     public function testBasicSave(){
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
+        $page = $this->service->createPage(TestUtils::getPageArray());
         $this->assertNotNull($page->id);
         $this->assertNotNull($this->service->findById($page->id));
     }
     
     public function testBasicDelete() {
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
+        $page = $this->service->createPage(TestUtils::getPageArray());
         $this->service->deletePage($page);
         $this->assertNull($this->service->findById($page->id));
     }
     
     public function testBasicUpdate() {
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
-        $page2 = $page->replicate();
+        $page = $this->service->createPage(TestUtils::getPageArray());
+        $page2 = TestUtils::getArrayFromPage($page);
+        $page2['width'] = 500;
+        $page2['height'] = 500;
         $this->service->updatePage($page, $page2);
+        $this->assertEquals(500,$this->service->findById($page->id)->width);
     }
     
     public function testElementCountDecreaseOnUpdate() {
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
+        $page = $this->service->createPage(TestUtils::getPageArray());
         PageTestUtils::fillPage($page);
         $page->elements;
-        $page2 = $page->replicate();
+        $page2 = TestUtils::getArrayFromPage($page);
         $array = [];
-        foreach($page2->elements as $element){
-            array_push($array,$element);
+        foreach($page->elements as $element){
+            array_push($array,TestUtils::getArrayFromElement($element));
         }
         array_splice($array, 1,1);
-        $page2->elements = $array;
+        $page2['elements'] = $array;
         $this->service->updatePage($page, $page2);
         $this->assertEquals(3, $this->service->findById($page->id)->elements->count());
     }   
     
     public function testElementCountIncreaseOnUpdate() {
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
+        $page = $this->service->createPage(TestUtils::getPageArray());
         PageTestUtils::fillPage($page);
         $page->elements;
-        $page2 = $page->replicate();
+        $page2 = TestUtils::getArrayFromPage($page);
         $array = [];
-        foreach($page2->elements as $element){
-            array_push($array,$element);
+        foreach($page->elements as $element){
+            array_push($array,TestUtils::getArrayFromElement($element));
         }
-        $element = factory(App\TextElement::class)->make();
-        array_push($array, ['type' => $element->type, 'width'=>$element->width,'height'=> $element->height,'positionX'=>$element->positionX,'positionY'=>$element->positionY]);
-        $page2->elements = $array;
+        array_push($array, TestUtils::getElementArray());
+        $page2['elements'] = $array;
         $this->service->updatePage($page, $page2);
         $this->assertEquals(5, $this->service->findById($page->id)->elements->count());
     }
     
     public function testAllElementsRemovedOnUpdate() {
-        $page = $this->service->createPage((array) factory(App\Page::class)->make());
+        $page = $this->service->createPage(TestUtils::getPageArray());
         PageTestUtils::fillPage($page);
-        $page2 = $page->replicate();
-        $array = [];
-        $page2->elements = $array;
+        $page2 = TestUtils::getArrayFromPage($page);
+        $page2['elements'] = [];
         $this->service->updatePage($page, $page2);
         $this->assertEquals(0, $this->service->findById($page->id)->elements->count()); 
     }

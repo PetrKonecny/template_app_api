@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
  * and open the template in the editor.
  */
 class ImageService {
+
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+    }
   
     public function getAll(){
         return Image::all();
@@ -16,7 +22,12 @@ class ImageService {
    
     public function findById($id)
     {
-        return Image::find($id);
+        $image = Image::findOrFail($id);
+        if($this->user == null || $this->user->can('show',$image)){
+            return $image;
+        }else{
+            throw new \RuntimeException("Unauthorized access"); 
+        }
     }
     
     public function createImage($file){

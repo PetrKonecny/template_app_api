@@ -12,6 +12,17 @@ use App\Services\ImageService;
  * and open the template in the editor.
  */
 class AlbumService {
+
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+        $this->imageService = new ImageService($this->user);
+    }
+
+    public function setUser($user){
+        $this->user = $user;
+    }
   
     public function getAll(){
         return Album::all();
@@ -20,7 +31,9 @@ class AlbumService {
     public function findById($id)
     {
         $album = Album::find($id);
-        $album->images;
+        if($album !== null){
+            $album->images;
+        }
         return $album;
     }
     
@@ -32,8 +45,10 @@ class AlbumService {
 
     public function updateAlbum($oldAlbum, $album){
         $ids = [];
-        foreach ($album['images'] as $image) {
-            $ids []= $image['id'];
+        if(isset($album['images'])){
+            foreach ($album['images'] as $image) {
+                $ids []= $image['id'];
+            }
         }
         Image::whereIn('id', $ids)->update(["album_id" => $oldAlbum->id]);
         Image::where('album_id', $oldAlbum->id)->whereNotIn('id', $ids)->update(["album_id" => null]);

@@ -43,6 +43,36 @@ $factory->define(App\TextElement::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\ImageElement::class, function (Faker\Generator $faker) {
+    return [
+        'type' => 'image_element',
+        'width' => rand(0, 300),
+        'height' => rand(0, 300),
+        'positionX' => rand(0, 300),
+        'positionY' => rand(0, 300),
+    ];
+});
+
+$factory->define(App\FrameElement::class, function (Faker\Generator $faker) {
+    return [
+        'type' => 'frame_element',
+        'width' => rand(0, 300),
+        'height' => rand(0, 300),
+        'positionX' => rand(0, 300),
+        'positionY' => rand(0, 300),
+    ];
+});
+
+$factory->define(App\TableElement::class, function (Faker\Generator $faker) {
+    return [
+        'type' => 'table_element',
+        'width' => rand(0, 300),
+        'height' => rand(0, 300),
+        'positionX' => rand(0, 300),
+        'positionY' => rand(0, 300),
+    ];
+});
+
 $factory->define(App\Album::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,

@@ -12,12 +12,12 @@ class TemplateInstanceController extends Controller
     
     public function __construct(TemplateInstanceService $service) {
         $this->service = $service;
-        $this->middleware('auth');
+        $this->service->setUser(Auth::user());
+        $this->middleware('auth');    
     }
-    
-    
+       
     public function index() {
-        if(Auth::user()->can('admin',TemplateInstance::class)){
+        if(Auth::user()->can('index',TemplateInstance::class)){
             return $this->service->getAll();
         }else{
             abort(401);
@@ -82,9 +82,6 @@ class TemplateInstanceController extends Controller
     }
     
     public function getAsPdf(TemplateInstance $templateInstance){       
-        /*$pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($this->service->findById($templateId)->toHtml());
-        return $pdf->inline();*/
         if(Auth::User()->can('show',$templateInstance)){
             $pdf = \App::make('dompdf.wrapper');
             $page = $templateInstance->template()->first()->pages()->first();

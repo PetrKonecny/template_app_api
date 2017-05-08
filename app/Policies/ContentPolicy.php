@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Font;
+use App\Content;
 use App\User;
 
-class FontPolicy
+class ContentPolicy
 {
     use HandlesAuthorization;
 
@@ -27,22 +27,26 @@ class FontPolicy
         }
     }
 
-    public function update(User $user, Font $font)
-    {
-        return $user->id === $font->user_id;
+    public function index(){
+        return false; 
     }
 
-    public function create(User $user, Font $font)
+    public function update(User $user, Content $content)
     {
-        return true;
+        return false;
     }
 
-    public function show(User $user, Font $font){
-        return $user->id === $font->user_id || $font->public;
+    public function create(User $user, Content $content)
+    {
+        return false;
     }
 
-    public function delete(User $user, Font $font)
+    public function show(User $user, Content $content){
+        return false;
+    }
+
+    public function delete(User $user, Content $content)
     {
-        return $user->id === $font->user_id;
+        return false;
     }
 }

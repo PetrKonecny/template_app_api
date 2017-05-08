@@ -6,31 +6,55 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Services\PageService;
+use App\Page;
 
 class PageController extends Controller
 {
-	public function __construct(PageService $service){
+
+    public function __construct(PageService $service){
         $this->pageService = $service;
+        $this->pageService->setUser(Auth::user());
+        $this->middleware('auth');
     }
 
     public function index(){
-    	return $this->pageService->getAll();
+        if(Auth::user()->can('index',Page::class)){
+           return $this->pageService->getAll();
+        }else{
+            abort(401);
+        }
     }
    
-    public function show($id)
-    {
-    	return $this->pageService->findById($id);
+    public function show($id){
+        $page = $this->pageService->findById($id);
+        if(Auth::User()->can('show',$page)){
+            return $page;
+        }else{
+            abort(401);
+        }
     }
     
-    public function store($page){
-        return $this->pageService->createPage($page);
+    public function store(Page $page){
+        if(Auth::User()->can('store',$page)){
+            return $this->pageService->createPage($page);
+        }else{
+            abort(401);
+        }
     }
 
-    public function update($page){
-        return $this->pageService->updatePage($page);
+    public function update(Page $page){
+        if(Auth::User()->can('update',$page)){
+            return $this->pageService->updatePage($page);
+        }else{
+            abort(401);
+        }    
     }
 
-    public function remove($page){
-    	$this->pageService->deletePage($page);
+    public function remove(Page $page){
+        if(Auth::user()->can('remove',$page)){
+            $this->pageService->deletePage($page);
+        }else{
+            abort(401);
+        }
     }
 }

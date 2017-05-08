@@ -10,6 +10,8 @@ use App\Font;
 use App\Content;
 use App\Image;
 use App\Services\ContentService;
+use App\Services\ImageService;
+use Illuminate\Support\Facades\Validator;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,37 +25,68 @@ use App\Services\ContentService;
  * @author Petr2
  */
 class ElementService {
+
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+        $this->service = new ContentService($this->user);
+        $this->imageService = new ImageService($this->user);
+    }
+
+    public function setUser($user){
+        $this->user = $user;
+    }
     
     public function getAll(){
         return Element::all();
     }
    
+
     public function findById($id)
     {
         return Element::find($id);
     }
+
+    public function deleteElement($element){
+        $element->delete();
+    }
+
+    private function createTextElement($array){
+        return new TextElement($array);
+    }
+
+    private function createFrameElement($array){
+        return new FrameElement($array);
+    }
+
+    private function createImageElement($array){
+        $element = new ImageElement($array);
+        if(isset($array['image']['id'])){
+            $this->imageService->findById($array['image']['id']);
+        }
+        return $element;
+    }
+
+    private function createTableElement($array){
+        if(isset($array['rows'])){
+            $array['rows'] = json_encode($array['rows']);
+        }
+        return new TableElement($array);
+    }
     
     public function createElement($array){
-        $contentService = new ContentService();
+        $this->validate($array);
+        $contentService = $this->service;
+        $element;
         if ($array['type'] == 'text_element'){
-            $element = new TextElement($array);
-            if(isset($array['font']) && (isset($array['font']['id']))){
-                $element->font()->associate(Font::find($array['font']['id']));
-            }
+            $element = $this->createTextElement($array);
         }else if($array['type'] == 'frame_element'){
-            $element = new FrameElement($array);
+            $element = $this->createFrameElement($array);
         }else if($array['type'] == 'image_element'){
-            $element = new ImageElement($array);
-            if(isset($array['image']['id'])){
-                $image = Image::find($array['image']['id']);
-                $element->image()->associate($image); 
-            }
-        }
-        else if($array['type'] == 'table_element'){
-            $array['rows'] = json_encode($array['rows']);
-            $element = new TableElement($array);
-        }else{
-            return;
+            $element = $this->createImageElement($array);
+        }else if($array['type'] == 'table_element'){
+            $element = $this->createTableElement($array);
         }
         $element->save();
         if (isset ($array['content'])) {
@@ -64,26 +97,16 @@ class ElementService {
         return $element;
     }
     
-    public function deleteElement($element){
-        $element->delete();
-    }
-    
     public function updateElement($element, $array){
-        $contentService = new ContentService();
-        if(isset($array['font']) && (isset($array['font']['id']))){
-            $font = Font::find($array['font']['id']);
-            $element->font()->associate($font);
-        }
-        if(isset($array['fontSize'])){
-            $element->font_size = $array['fontSize'];
-        }
+        $this->validate($array);
+        $contentService = $this->service;
         if(isset($array['rows'])){
             $array['rows'] = json_encode($array['rows']);
             $element->rows = $array['rows'];
         }
         if (isset ($array['content'])) {
-            if (isset ($array['content']['id'])){
-                $content = $contentService->updateContent(Content::find($array['content']['id']),$array['content']);
+            if (isset ($array['content']['id']) && $element->content !== null ){
+                $content = $contentService->updateContent($element->content,$array['content']);
             }else{
                 $content = $contentService->createContent($array['content']);
                 $content->element()->associate($element);
@@ -94,5 +117,18 @@ class ElementService {
         $element->positionX = $array['positionX'];
         $element->positionY = $array['positionY'];
         $element->save();     
+    }
+
+    public function validate($array){
+        $validator = Validator::make($array, [
+            'type' => "required|in:text_element,image_element,frame_element,table_element",
+            'width' => "required|numeric",
+            'height' => "required|numeric",
+            'positionX' => "required|numeric",
+            'positionY' => "required|numeric",
+        ]);
+        if($validator->fails()){
+            throw new \RuntimeException("validation error");
+        } 
     }
 }

@@ -15,16 +15,14 @@ class TemplateController extends Controller {
     
     public function __construct(TemplateService $service) {
         $this->service = $service;
+        $this->service->setUser(Auth::user());
         $this->middleware('auth');
     }
 
         
     public function index() {
-        if(Auth::user()->can('admin',Template::class)){
-            return $this->service->getAll();
-        }else{
-            abort(401);
-        }
+        $this->authorize('index',Template::class);
+        return $this->service->getAll();
     }
 
     public function getUserTemplates($id){
@@ -40,18 +38,15 @@ class TemplateController extends Controller {
     }
 
     public function getInstancesForTemplate(Template $template){
-        if(Auth::User()->can('show',$template)){
-            return $template->templateInstances;
-        }
+        $this->authorize('show',$template);
+        return $template->templateInstances;
     }
 
     public function show(Template $template) {
-        if(Auth::User()->can('show',$template)){
-            $template = $this->service->findByIdNested($template->id);
-            return $template;
-        }else{
-            abort(401);
-        }
+        $this->authorize('show',$template);
+        $template = $this->service->findByIdNested($template->id);
+        echo "AAAAAAAA";
+        return $template;
     }
 
     public function search(){
@@ -59,32 +54,22 @@ class TemplateController extends Controller {
     }
     
     public function store () {
-        if(Auth::user()->can('create',Template::class)){
-            $data = Input::all();
-            $template = $this->service->createTemplate($data);
-            return $this->service->findByIdNested($template->id);
-        }else{
-            abort(401);
-        }
+        $this->authorize('create',Template::class);
+        $data = Input::all();
+        $template = $this->service->createTemplate($data);
+        return $this->service->findByIdNested($template->id);
     }
     
     public function destroy(Template $template) {
-        if(Auth::user()->can('delete',$template)){
-            $this->service->deleteTemplate($template->id);
-        }else{
-            abort(401);
-        }
+        $this->authorize('delete',$template);
+        $this->service->deleteTemplate($template->id);
     }
     
     public function update(Template $template) {
-        if(Auth::user()->can('update',$template)){
-            $data = Input::all();
-            $template = $this->service->findById($template->id);
-            $this->service->updateTemplate($template,$data);
-            return $this->service->findByIdNested($template->id);
-        }else{
-            abort(404);
-        }
+        $this->authorize('update',$template);
+        $template = $this->service->findById($template->id);
+        $this->service->updateTemplate($template,Input::all());
+        return $this->service->findByIdNested($template->id);
     }
 
 }

@@ -6,32 +6,55 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Services\ContentService;
+use App\Content;
 
 class ContentController extends Controller
 {
 
-	public function __construct(ContentService $service){
+    public function __construct(ContentService $service){
         $this->contentService = $service;
+        $this->contentService->setUser(Auth::user());
+        $this->middleware('auth');
     }
 
     public function index(){
-    	return $this->contentService->getAll();
+        if(Auth::user()->can('index',Content::class)){
+           return $this->contentService->getAll();
+        }else{
+            abort(401);
+        }
     }
    
-    public function show($id)
-    {
-    	return $this->contentService->findById($id);
+    public function show($id){
+        $content = $this->contentService->findById($id);
+        if(Auth::User()->can('show',$content)){
+            return $content;
+        }else{
+            abort(401);
+        }
     }
     
-    public function store($content){
-        return $this->contentService->createContent($content);
+    public function store(Content $content){
+        if(Auth::User()->can('store',$content)){
+            return $this->contentService->createContent($content);
+        }else{
+            abort(401);
+        }
     }
 
-    public function update($content){
-        return $this->contentService->updateContent($content);
+    public function update(Content $content){
+        if(Auth::User()->can('update',$content)){
+            return $this->contentService->updateContent($content);
+        }else{
+            abort(401);
+        }    
     }
 
-    public function remove($content){
-    	$this->contentService->deleteContent($content);
+    public function remove(Content $content){
+        if(Auth::user()->can('remove',$content)){
+            $this->contentService->deleteContent($content);
+        }else{
+            abort(401);
+        }
     }
 }

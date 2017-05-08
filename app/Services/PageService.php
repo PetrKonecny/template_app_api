@@ -18,7 +18,18 @@ use App\Services\ElementService;
  * @author Petr2
  */
 class PageService {
-    
+
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+        $this->elementService = new ElementService($this->user);
+    }
+
+    public function setUser($user){
+        $this->user = $user;
+    }  
+      
     public function getAll(){
         return Page::all();
     }
@@ -29,7 +40,7 @@ class PageService {
     }
     
     public function createPage($array){
-        $elementService = new ElementService;
+        $elementService = $this->elementService;
         $page = new Page($array);
         $page->save();
         if(isset($array['elements'])){
@@ -47,29 +58,34 @@ class PageService {
     
     public function updatePage($page, $array){
         
-        $elementService = new ElementService;
+        $elementService = $this->elementService;
         
-        foreach ($page->elements as $element){
-            $delete = true;
-            foreach($array['elements'] as $element2){
-                if(isset($element2['id']) && $element2['id'] === $element->id){
-                    $delete = false;
+        if(isset($array['width'])){
+            $page->width = $array['width'];
+        }
+        if(isset($array['height'])){
+            $page->height = $array['height'];
+        }
+
+        foreach ($page->elements as $element){                
+            if(isset($array['elements'])){
+                $delete = true;
+                foreach($array['elements'] as $index => $element2){
+                    if(isset($element2['id']) && $element2['id'] === $element->id){
+                        $delete = false;
+                        $elementService->updateElement($element,$element2);
+                    }else{
+                        $element2 = $elementService->createelement($element2);
+                        $page->elements()->save($element2);
+                    }
+                    $array['elements'] = array_splice($array['elements'], $index,1);
+                }
+                if($delete){
+                    $element->delete();
                 }
             }
-            if($delete){
-                $element->delete();
-            }
         }
-        
+
         $page->save();
-        
-        foreach ($array['elements'] as $element){
-            if(isset($element['id'])){
-                $elementService->updateElement($elementService->findById($element['id']), $element);
-            }else if(isset($element['type'])){
-                $element2 = $elementService->createElement($element);
-                $page->elements()->save($element2);
-            }
-        }       
     }    
 }

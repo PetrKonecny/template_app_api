@@ -26,7 +26,7 @@ class TemplateInstancePolicy
         }
     }
 
-    public function admin(){
+    public function index(){
         return false;
     }
 

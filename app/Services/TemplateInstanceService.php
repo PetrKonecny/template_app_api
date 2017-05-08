@@ -10,9 +10,23 @@ use App\TextContent;
 use App\Element;
 use App\Template;
 use App\Services\ContentService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\elementService;
+use App\Services\TemplateService;
 
 class TemplateInstanceService {
+
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+        $this->elementService = new ElementService($this->user);
+        $this->contentService = new ContentService($this->user);
+        $this->templateService = new TemplateService($this->user);
+    }
+
+    public function setUser($user){
+        $this->user = $user;
+    }
 
     public function getAll(){
         return TemplateInstance::with('tagged')->get();
@@ -20,7 +34,7 @@ class TemplateInstanceService {
    
     public function findById($id)
     {
-        $templateInst = TemplateInstance::with('contents')->find($id);
+        $templateInst = TemplateInstance::with('contents')->findOrFail($id);
         $templateInst->tagged;
         foreach($templateInst->contents as $content){
             if($content->type == 'image_content'){
@@ -44,43 +58,62 @@ class TemplateInstanceService {
     public function createTemplateInstance($array){
         $contentService = new ContentService();
         $templateInst = new TemplateInstance($array);
-        $template = Template::find($array['template_id']);
-        $templateInst->template()->associate($template);
-        $templateInst->user()->associate(Auth::user());
+        if(isset($array['template_id'])){
+            $template = $this->templateService->findById($array['template_id']);
+            $templateInst->template()->associate($template);
+        }
+
+        $templateInst->user()->associate($this->user);
         $templateInst->save();
+
         if(isset($array['tagged'])){
             $templateInst->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
-        foreach($array['contents'] as $content) {
-            if(isset($content)){
+
+        if(isset($array['contents'])){
+            foreach($array['contents'] as $content) {
                 $content2 = $contentService->createContent($content);
-                $element = Element::find($content['element_id']);
-                $content2->element()->associate($element);
                 $templateInst->contents()->save($content2);
+                if(isset($content['element_id'])){
+                    $element = $this->elementService->findById($content['element_id']);
+                    $content2->element()->associate($element);
+                }
             }
         }
         return $templateInst;
     }
     
     public function updateTemplateInstance($templateInst, $array){
-        $contentService = new ContentService();
+        $contentService = $this->contentService;
         $templateInst->name = $array['name'];
+
         if(isset($array['tagged'])){
             $templateInst->retag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
-        $templateInst->save();        
-        foreach($array['contents'] as $content) {
-            if(isset($content)){
-                if(isset($content['id'])){
-                    $content2 = $contentService->updateContent(Content::find($content['id']), $content);
-                }else{
-                    $content2 = $contentService->createContent($content);
+
+        foreach ($templateInst->contents as $content){                
+            if(isset($array['contents'])){
+                $delete = true;
+                foreach($array['contents'] as $index => $content2){
+                    if(isset($content2['id']) && $content2['id'] === $content->id){
+                        $delete = false;
+                        $contentService->updateContent($content,$content2);
+                    }else{
+                        $content2 = $contentService->createContent($content2);
+                        if(isset($content2['element_id'])){
+                            $element = $this->elementService->findById($content['element_id']);
+                            $content2->element()->associate($element);
+                        }
+                    }
+                    $array['pages'] = array_splice($array['pages'], $index,1);
                 }
-                $element = Element::find($content['element_id']);
-                $content2->element()->associate($element);
-                $templateInst->contents()->save($content2);
+                if($delete){
+                    $page3->delete();
+                }
             }
         }
+
+        $templateInst->save();  
         return $templateInst;    
     }
    

@@ -7,11 +7,21 @@ use App\Page;
 use App\TextElement;
 use App\Element;
 use App\Services\PageService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TemplateService
 {
+    
+    private $user;
+
+    public function __construct($user = null){
+        $this->user = $user;
+        $this->pageService = new PageService($this->user);
+    }
+
+    public function setUser($user){
+        $this->user = $user;
+    }
     
     public function getAll(){
         return Template::with('tagged')->get();
@@ -27,10 +37,9 @@ class TemplateService
     }
 
     public function findById($id){
-        return Template::find($id);
+        return Template::find($id);    
     }
     
-    /*TODO: should be done better using interface tables */ 
     public function findByIdNested($id){
         $template =  Template::with('pages','pages.elements')->find($id);
         $template->tagged;
@@ -57,10 +66,10 @@ class TemplateService
     }
     
     public function createTemplate($array){       
-        $pageService = new PageService();
+        $pageService = $this->pageService;
         $template = new Template($array);
-        if(Auth::user() !== null){
-            $template->user()->associate(Auth::user());
+        if($this->user !== null){
+            $template->user()->associate($this->user);
         }
         $template->save();
         if(isset($array['tagged'])){
@@ -91,29 +100,29 @@ class TemplateService
     }
     
     public function updateTemplate($template, $array){
-        $pageService = new PageService();
+        $pageService = $this->pageService;
         $template->name = $array['name'];
+
         if(isset($array['tagged'])){
             $template->retag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
-        foreach ($template->pages as $page3){
-            $delete = true;
-            foreach($array['pages'] as $page4){
-                if(isset($page4['id']) && $page4['id'] === $page3->id){
-                    $delete = false;
+        
+        foreach ($template->pages as $page3){                
+            if(isset($array['pages'])){
+                $delete = true;
+                foreach($array['pages'] as $index => $page4){
+                    if(isset($page4['id']) && $page4['id'] === $page3->id){
+                        $delete = false;
+                        $pageService->updatePage($page3,$page4);
+                    }else{
+                        $page4 = $pageService->createPage($page4);
+                        $template->pages()->save($page4);
+                    }
+                    $array['pages'] = array_splice($array['pages'], $index,1);
                 }
-            }
-            if($delete){
-                $page3->delete();
-            }
-        }
-                
-        foreach ($array['pages'] as $page){
-            if((isset($page['id']))){
-                $pageService->updatePage($pageService->findById($page['id']),$page);
-            }else{
-                $page = $pageService->createPage($page);
-                $template->pages()->save($page);
+                if($delete){
+                    $page3->delete();
+                }
             }
         }
         $template->save();

@@ -28,7 +28,7 @@ class TemplatePolicy
         }
     }
 
-    public function admin(){
+    public function index(){
         return false;
     }
 

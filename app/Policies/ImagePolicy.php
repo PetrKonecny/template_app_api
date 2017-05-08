@@ -20,6 +20,17 @@ class ImagePolicy
         //
     }
 
+    public function index(){
+        return false; 
+    }
+
+    public function before($user, $ability)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+    }
+
     public function update(User $user, Image $image)
     {
         return $user->id === $image->user_id;
