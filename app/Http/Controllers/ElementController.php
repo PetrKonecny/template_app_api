@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Services\ElementService;
 use App\Element;
+use Illuminate\Support\Facades\Auth;
 
 class ElementController extends Controller
 {
@@ -18,11 +19,8 @@ class ElementController extends Controller
     }
 
     public function index(){
-        if(Auth::user()->can('index',Element::class)){
-    	   return $this->elementService->getAll();
-        }else{
-            abort(401);
-        }
+        $this->authorize('index',Element::class);
+        return $this->elementService->getAll();      
     }
    
     public function show($id){
@@ -50,11 +48,8 @@ class ElementController extends Controller
         }    
     }
 
-    public function remove(Element $element){
-        if(Auth::user()->can('remove',$element)){
-    	    $this->elementService->deleteElement($element);
-        }else{
-            abort(401);
-        }
+    public function destroy(Element $element){
+        $this->authorize('destroy', $element);
+        $this->elementService->deleteElement($element);
     }
 }

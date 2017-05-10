@@ -91,6 +91,14 @@ Route::resource('element', 'ElementController');
 
 Route::resource('page', 'PageController');
 
+Route::get('album/public',[
+    'uses' => 'AlbumController@getPublicAlbums'
+]);
+
+Route::get('album/user/{id}',[
+    'uses' => 'AlbumController@getUserAlbums'
+]);
+
 Route::resource('album', 'AlbumController');
 
 Route::post('album/{id}/upload', [

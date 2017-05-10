@@ -45,7 +45,6 @@ class TemplateController extends Controller {
     public function show(Template $template) {
         $this->authorize('show',$template);
         $template = $this->service->findByIdNested($template->id);
-        echo "AAAAAAAA";
         return $template;
     }
 

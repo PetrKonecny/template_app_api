@@ -42,7 +42,7 @@ class AlbumPolicy
     }
 
     public function show(User $user, Album $album){
-        return $user->id === $album->user_id || $album->public;
+        return $album->public || $user->id === $album->user_id;
     }
 
     public function delete(User $user, Album $album)

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Services\ContentService;
 use App\Content;
+use Illuminate\Support\Facades\Auth;
 
 class ContentController extends Controller
 {

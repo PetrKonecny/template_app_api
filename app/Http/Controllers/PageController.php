@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Services\PageService;
 use App\Page;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
@@ -50,8 +51,8 @@ class PageController extends Controller
         }    
     }
 
-    public function remove(Page $page){
-        if(Auth::user()->can('remove',$page)){
+    public function destroy(Page $page){
+        if(Auth::user()->can('destroy',$page)){
             $this->pageService->deletePage($page);
         }else{
             abort(401);

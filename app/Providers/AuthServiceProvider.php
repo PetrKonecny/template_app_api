@@ -17,6 +17,14 @@ class AuthServiceProvider extends ServiceProvider
         'App\TemplateInstance' => 'App\Policies\TemplateInstancePolicy',
         'App\Font' => 'App\Policies\FontPolicy',
         'App\Image' => 'App\Policies\ImagePolicy',
+        'App\Content' => 'App\Policies\ContentPolicy',
+        'App\Element' => 'App\Policies\ElementPolicy',
+        'App\ImageElement' => 'App\Policies\ElementPolicy',
+        'App\TextElement' => 'App\Policies\ElementPolicy',
+        'App\FrameElement' => 'App\Policies\ElementPolicy',
+        'App\TableElement' => 'App\Policies\ElementPolicy',
+        'App\Album' => 'App\Policies\AlbumPolicy',
+        'App\Page' => 'App\Policies\PagePolicy',
     ];
 
     /**

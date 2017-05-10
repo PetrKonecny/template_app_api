@@ -20,8 +20,12 @@ class ElementPolicy
         //
     }
 
+    public function index(){
+        return false;
+    }
+
     public function before($user, $ability)
-    {
+    {            
         if ($user->isAdmin()) {
             return true;
         }
@@ -41,7 +45,7 @@ class ElementPolicy
         return false;
     }
 
-    public function delete(User $user, Element $element)
+    public function destroy(User $user, Element $element)
     {
         return false;
     }

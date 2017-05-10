@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests;
 use App\Album;
+use App\User;
 use App\Services\AlbumService;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,13 +28,22 @@ class AlbumController extends Controller
         }
     }
    
-    public function show($id)
+    public function show(Album $album)
     {   
-        if(Auth::user()->can('show',Album::class)){
-            return $this->albumService->findById($id);
+        $this->authorize('show',$album);
+        return $this->albumService->findById($album->id);
+    }
+
+    public function getUserAlbums($id){
+        if(Auth::user()->id == $id || Auth::user()->admin){
+            return $this->albumService->getAlbumsForUser(User::find($id));
         }else{
             abort(401);
         }
+    }
+
+    public function getPublicAlbums(){
+        return $this->albumService->getPublicAlbums();
     }
     
     public function store(Album $album){

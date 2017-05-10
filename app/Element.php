@@ -11,6 +11,16 @@ class Element extends Model {
     
     protected $fillable = ['width','height','positionX','positionY','positionZ','font_size','background_color','text_color','opacity'];
 
+    protected static function boot() {
+        parent::boot();
+
+        
+        static::deleting(function($element) { // before delete() method call this
+             $element->content()->delete();
+             // do the rest of the cleanup...
+        });
+    }
+
     use SingleTableInheritanceTrait;
 
     protected $table = "elements";

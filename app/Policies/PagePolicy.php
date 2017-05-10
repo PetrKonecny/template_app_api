@@ -45,7 +45,7 @@ class PagePolicy
         return false;
     }
 
-    public function delete(User $user, Page $page)
+    public function destroy(User $user, Page $page)
     {
         return false;
     }

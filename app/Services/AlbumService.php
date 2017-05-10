@@ -27,6 +27,15 @@ class AlbumService {
     public function getAll(){
         return Album::all();
     }
+
+    public function getPublicAlbums(){
+        return Album::where('public',true)->with('tagged')->get();
+    }
+   
+
+    public function getAlbumsForUser($user){
+        return Album::where('user_id',$user->id)->with('tagged')->get();
+    }
    
     public function findById($id)
     {
