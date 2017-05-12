@@ -10,7 +10,7 @@ use App\TextContent;
 use App\Element;
 use App\Template;
 use App\Services\ContentService;
-use App\Services\elementService;
+use App\Services\ElementService;
 use App\Services\TemplateService;
 
 class TemplateInstanceService {

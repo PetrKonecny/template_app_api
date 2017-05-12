@@ -57,7 +57,8 @@ class AlbumController extends Controller
     public function update($id){
         $album = $this->albumService->findById($id);
         if(Auth::user()->can('update',$album)){
-            return $this->albumService->updateAlbum($oldAlbum,Input::all());
+            $album = $this->albumService->updateAlbum($album,Input::all());
+            return $this->albumService->findById($album->id);
         }else{
             abort(401);
         }

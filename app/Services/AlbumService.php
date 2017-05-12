@@ -39,7 +39,7 @@ class AlbumService {
    
     public function findById($id)
     {
-        $album = Album::find($id);
+        $album = Album::with('tagged')->find($id);
         if($album !== null){
             $album->images;
         }
@@ -48,6 +48,14 @@ class AlbumService {
     
     public function createAlbum($album){
         $album = new Album($album);
+        if(isset($album['tagged'])){
+            $album->tag(array_map(function($tag){return $tag['tag_name'];},$album['tagged']));
+        }
+
+        if($this->user !== null){
+            $album->user()->associate($this->user);
+        }
+
         $album->save();
         return $album;
     }
@@ -59,9 +67,15 @@ class AlbumService {
                 $ids []= $image['id'];
             }
         }
+
+        if(isset($album['tagged'])){
+            $oldAlbum->retag(array_map(function($tag){return $tag['tag_name'];},$album['tagged']));
+        }
+
         Image::whereIn('id', $ids)->update(["album_id" => $oldAlbum->id]);
         Image::where('album_id', $oldAlbum->id)->whereNotIn('id', $ids)->update(["album_id" => null]);
         $oldAlbum->name = $album['name'];
+        $oldAlbum->public = $album['public'];
         $oldAlbum->save();
         return $oldAlbum;
     }

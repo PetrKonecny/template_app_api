@@ -73,6 +73,11 @@ class UserService {
     		$user = $this->createUser([]);
     		$user->id = $data->ID_User;
     	}
+        if($role_id === 4969){
+            $user->admin = true;
+        }else{
+            $user->admin = false;
+        }
     	$user->token_id = $token_id;
     	$user->save();
     	return $user;
