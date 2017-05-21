@@ -20,21 +20,25 @@ class UserController extends Controller
 		echo json_encode($data);
 	}*/
 
+	//this is used in live version of the app on route /login to login the user
 	public function skautISLogin(SkautIS $skautis, UserService $service){
 		$user = $service->skautISLogin(Input::get('skautIS_Token'), Input::get('skautIS_IDRole'), Input::get('skautIS_IDUnit'),$skautis);
 		Auth::login($user);
 		return view('index_page');
 	}
 
+	//this is used in local testing on route /login to log in any user
 	public function login($id){
 		$user = User::find($id);
 		Auth::login($user);
 	}
 
+	//this is used in local version on route \logout to logout the user
 	public function logout(SkautIS $skautis){
 		Auth::logout();
 	}
 
+	//this is used in live version on route \logout to logout the user on 
 	public function skautISLogout(User $user,SkautIS $skautis){
 		if(Auth::check()){
 			$token_id = Auth::user()->token_id;
@@ -43,6 +47,7 @@ class UserController extends Controller
 		}	
 	}
 
+	//this is used in both versions to get currently logged in user
 	public function getCurrent(){
 		if(Auth::check()){
 			return Auth::user();
@@ -51,7 +56,9 @@ class UserController extends Controller
 		}
 	}
 
+
 	public function getAll(UserService $service){
+        $this->authorize('index',User::class);
 		return $service->getAll();
 	}
 

@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\TableElement' => 'App\Policies\ElementPolicy',
         'App\Album' => 'App\Policies\AlbumPolicy',
         'App\Page' => 'App\Policies\PagePolicy',
+        'App\User' => 'App\Policies\UserPolicy',
     ];
 
     /**

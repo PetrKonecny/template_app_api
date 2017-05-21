@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Content;
-
+//model for text content
 class TextContent extends Content
 {
         protected $fillable = ['text'];

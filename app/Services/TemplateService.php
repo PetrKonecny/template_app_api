@@ -9,6 +9,9 @@ use App\Element;
 use App\Services\PageService;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Service providing database access for Template model
+ */
 class TemplateService
 {
     
@@ -23,23 +26,46 @@ class TemplateService
         $this->user = $user;
     }
     
+    /**
+    * gets all templates in the DB
+    * @return - returns all templates with tags
+    */
     public function getAll(){
         return Template::with('tagged')->get();
     }
 
+    /**
+    * gets all public templates 
+    * @return all public templates with tags
+    */
     public function getPublicTemplates(){
         return Template::where('public',true)->with('tagged')->get();
     }
    
 
+    /**
+    * gets tempaltes for given user
+    * @param user - user to get templates for
+    * @return templates with tags
+    */
     public function getTemplatesForUser($user){
         return Template::where('user_id',$user->id)->with('tagged')->get();
     }
 
+    /**
+    * finds template by id
+    * @param id - id to search
+    * @return template or null if none found
+    */
     public function findById($id){
         return Template::find($id);    
     }
     
+    /**
+    * finds template with all pages and elements and contents in those pages
+    * @param id - id to search
+    * @return template with pages, elements and contents
+    */
     public function findByIdNested($id){
         $template =  Template::with('pages','pages.elements')->find($id);
         $template->tagged;
@@ -65,6 +91,11 @@ class TemplateService
         return $template;
     }
     
+    /**
+    * creates new template from the array
+    * @param array - array to create template from
+    * @return created template
+    */
     public function createTemplate($array){       
         $pageService = $this->pageService;
         $template = new Template($array);
@@ -84,6 +115,10 @@ class TemplateService
         return $template;
     }
     
+    /**
+    * deletes template 
+    * @param id - id of template to delete
+    */
     public function deleteTemplate($id){
         $template = Template::find($id);
         if($template != null){
@@ -91,6 +126,11 @@ class TemplateService
         }
     }
 
+    /**
+    *  searches all templates by their name and tag
+    * @param query - query to search for
+    * @return matching tempaltes with tags
+    */
     public function search($query){
         $ids= DB::table('templates')->leftJoin('tagging_tagged',function($join){
             $join->on('templates.id','=','tagging_tagged.taggable_id')->where('tagging_tagged.taggable_type','=','App\Template');
@@ -99,6 +139,11 @@ class TemplateService
         return Template::with('tagged')->find(array_map(function($i){return $i->id;},$ids));
     }
     
+    /**
+    *   updates template 
+    * @param tempalte - template to update
+    * @param array - array containing data to update
+    */
     public function updateTemplate($template, $array){
         $pageService = $this->pageService;
         $template->name = $array['name'];
@@ -128,10 +173,12 @@ class TemplateService
         $template->save();
     }
     
+    //gets pages for template
     public function getPagesForTemplate(Template $template){
         return $template->pages();
     }
     
+    //adds pages to template
     public function addPagesToTemplate($template,$array){
         foreach ($array as $page){
             $page2 = new Page();

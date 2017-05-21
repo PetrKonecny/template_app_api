@@ -17,7 +17,7 @@ class CreatePagesTable extends Migration
             $table->integer('page_number');
             $table->integer('template_id');
             $table->integer('width');
-            $table->integer('length');
+            $table->integer('height');
             $table->timestamps();
         });
     }

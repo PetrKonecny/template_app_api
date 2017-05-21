@@ -18,6 +18,11 @@ class PageController extends Controller
         $this->middleware('auth');
     }
 
+
+    /**responds to route
+    /page  GET
+    gets all page in the DB
+    */ 
     public function index(){
         if(Auth::user()->can('index',Page::class)){
            return $this->pageService->getAll();
@@ -26,6 +31,10 @@ class PageController extends Controller
         }
     }
    
+   /**responds to route
+    /page/<id>  GET
+    gets one page from the DB
+    */
     public function show($id){
         $page = $this->pageService->findById($id);
         if(Auth::User()->can('show',$page)){
@@ -35,6 +44,10 @@ class PageController extends Controller
         }
     }
     
+    /**responds to route
+    /page  POST
+    creates new page
+    */
     public function store(Page $page){
         if(Auth::User()->can('store',$page)){
             return $this->pageService->createPage($page);
@@ -43,6 +56,10 @@ class PageController extends Controller
         }
     }
 
+    /**responds to route
+    /page/<id>/file  GET
+    creates new page
+    */
     public function update(Page $page){
         if(Auth::User()->can('update',$page)){
             return $this->pageService->updatePage($page);
@@ -51,6 +68,10 @@ class PageController extends Controller
         }    
     }
 
+    /**responds to route
+    /page/<id>  DELETE
+    removes the page 
+    */
     public function destroy(Page $page){
         if(Auth::user()->can('destroy',$page)){
             $this->pageService->deletePage($page);

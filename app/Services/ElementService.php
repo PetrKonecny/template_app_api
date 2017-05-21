@@ -13,19 +13,14 @@ use App\Services\ContentService;
 use App\Services\ImageService;
 use Illuminate\Support\Facades\Validator;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- * Description of ElementService
+ * Service providing database access for Element model
  *
- * @author Petr2
- */
+  */
 class ElementService {
 
+    //user used for autorization
     private $user;
 
     public function __construct($user = null){
@@ -38,36 +33,53 @@ class ElementService {
         $this->user = $user;
     }
     
+    /** 
+    * gets all elements
+    * @return all elements in the DB
+    */
     public function getAll(){
         return Element::all();
     }
    
-
+    /** 
+    * finds element by id  
+    * @param id - id of searched element
+    * @return element or null if none found
+    */
     public function findById($id)
     {
         return Element::find($id);
     }
 
+    /** 
+    * deletes element from DB
+    * @param element - element to delete
+    */
     public function deleteElement($element){
         $element->delete();
     }
 
+    //helper function to create text element
     private function createTextElement($array){
         return new TextElement($array);
     }
 
+    //helper function to create frame element
     private function createFrameElement($array){
         return new FrameElement($array);
     }
 
+    //helper function to create image element
     private function createImageElement($array){
         $element = new ImageElement($array);
         if(isset($array['image']['id'])){
-            $this->imageService->findById($array['image']['id']);
+            $image = $this->imageService->findById($array['image']['id']);
+            $element->image()->associate($image);
         }
         return $element;
     }
 
+    //helper function to create table element
     private function createTableElement($array){
         if(isset($array['rows'])){
             $array['rows'] = json_encode($array['rows']);
@@ -75,6 +87,11 @@ class ElementService {
         return new TableElement($array);
     }
     
+    /** 
+    * creates new image, text, frame or table element and its content
+    * @param array - array representing element to create
+    * @return created element
+    */    
     public function createElement($array){
         $this->validate($array);
         $contentService = $this->service;
@@ -97,6 +114,12 @@ class ElementService {
         return $element;
     }
     
+    /** 
+    * updates old text, image, frame or table content with new data including its content
+    * @param element - Element instance to update
+    * @param array - new data to update
+    * @return - updated element
+    */
     public function updateElement($element, $array){
         $this->validate($array);
         $contentService = $this->service;
@@ -119,6 +142,7 @@ class ElementService {
         $element->save();     
     }
 
+    //validates input data for element
     public function validate($array){
         $validator = Validator::make($array, [
             'type' => "required|in:text_element,image_element,frame_element,table_element",

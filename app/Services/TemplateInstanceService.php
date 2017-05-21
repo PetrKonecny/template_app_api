@@ -13,6 +13,9 @@ use App\Services\ContentService;
 use App\Services\ElementService;
 use App\Services\TemplateService;
 
+/**
+ * Service providing database access for TemplateInstance model
+ */
 class TemplateInstanceService {
 
     private $user;
@@ -28,10 +31,19 @@ class TemplateInstanceService {
         $this->user = $user;
     }
 
+    /**
+    * gets all template instances in the DB
+    * @return - returns all template instances with tags
+    */
     public function getAll(){
         return TemplateInstance::with('tagged')->get();
     }
    
+   /**
+    * finds tmeplate instance by id
+    * @param id - id of instance to be found
+    * @return template instance or null if none found 
+   */
     public function findById($id)
     {
         $templateInst = TemplateInstance::with('contents')->findOrFail($id);
@@ -47,16 +59,30 @@ class TemplateInstanceService {
         return $templateInst;
     }
 
+    /**
+    * gets all template instances for given user
+    * @param user - user to find template instances for
+    * @return template instances for user with tags
+    */
     public function getTemplateInstancesForUser($user){
         return TemplateInstance::where('user_id',$user->id)->with('tagged')->get();
     }
     
+    /**
+    * deletes template instance
+    *  @param id - id of template instance to be deleted
+    */
     public function deleteTemplateInstance($id){
         TemplateInstance::destroy($id);
     }
     
+    /**
+    * creates new template instance from the array with contents and tags
+    * @param array - array containing template instance data
+    * @return created template instance
+    */
     public function createTemplateInstance($array){
-        $contentService = new ContentService();
+        $contentService = $this->contentService;
         $templateInst = new TemplateInstance($array);
         if(isset($array['template_id'])){
             $template = $this->templateService->findById($array['template_id']);
@@ -72,17 +98,25 @@ class TemplateInstanceService {
 
         if(isset($array['contents'])){
             foreach($array['contents'] as $content) {
-                $content2 = $contentService->createContent($content);
-                $templateInst->contents()->save($content2);
-                if(isset($content['element_id'])){
-                    $element = $this->elementService->findById($content['element_id']);
-                    $content2->element()->associate($element);
+                if(isset($content['type'])){
+                    $content2 = $contentService->createContent($content);
+                    $templateInst->contents()->save($content2);
+                    if(isset($content['element_id'])){
+                        $element = $this->elementService->findById($content['element_id']);
+                        $content2->element()->associate($element);
+                        $content2->save();
+                    }
                 }
             }
         }
         return $templateInst;
     }
     
+    /** 
+    * updates template instance
+    * @param templateInst - tmeplate inst to be updated
+    * @param array - array containing updated data
+    */
     public function updateTemplateInstance($templateInst, $array){
         $contentService = $this->contentService;
         $templateInst->name = $array['name'];
@@ -98,17 +132,19 @@ class TemplateInstanceService {
                     if(isset($content2['id']) && $content2['id'] === $content->id){
                         $delete = false;
                         $contentService->updateContent($content,$content2);
-                    }else{
-                        $content2 = $contentService->createContent($content2);
+                    }else if(isset($content2['type'])){
+                        $content3 = $contentService->createContent($content2);
                         if(isset($content2['element_id'])){
-                            $element = $this->elementService->findById($content['element_id']);
-                            $content2->element()->associate($element);
+                            $element = $this->elementService->findById($content2['element_id']);
+                            $content3->element()->associate($element);
+                            $templateInst->contents()->save($content3);
+                            $content3->save();
                         }
                     }
-                    $array['pages'] = array_splice($array['pages'], $index,1);
+                    $array['contents'] = array_splice($array['contents'], $index,1);
                 }
                 if($delete){
-                    $page3->delete();
+                    $content->delete();
                 }
             }
         }

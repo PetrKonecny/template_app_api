@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Template;
 use App\TemplateInstance;
 
+//model for user that is authenticable
 class User extends Authenticatable
 {
     /**
@@ -27,14 +28,17 @@ class User extends Authenticatable
     ];
 
 
+    //relation to its templates
     public function templates(){
         $this->hasMany(Template::class);
     }
 
+    //relation to its template instances
     public function templateInstances(){
         $this->hasMany(TemplateInstance::class);
     }
 
+    //whther user is admin or not
     public function isAdmin(){
         return $this->admin;
     }

@@ -15,7 +15,11 @@ class TemplateInstanceController extends Controller
         $this->service->setUser(Auth::user());
         $this->middleware('auth');    
     }
-       
+    
+    /**responds to route
+    /templateInstance  GET
+    gets all template instances (documents)  in the DB
+    */     
     public function index() {
         if(Auth::user()->can('index',TemplateInstance::class)){
             return $this->service->getAll();
@@ -24,6 +28,10 @@ class TemplateInstanceController extends Controller
         }
     }
     
+    /**responds to route
+    /templateInstance/<id>  GET
+    gets one document from the DB
+    */ 
     public function show(TemplateInstance $templateInstance) {
         if(Auth::User()->can('show',$templateInstance)){
             $templateInstance = $this->service->findById($templateInstance->id);
@@ -33,6 +41,10 @@ class TemplateInstanceController extends Controller
         }
     }
 
+    /**responds to route
+    /templateInstance/user/<id>  GET
+    gets all documents belonging to the given user
+    */ 
     public function getUserTemplateInstances($id){
         if(Auth::user()->id == $id){
             return $this->service->getTemplateInstancesForUser(User::find($id));
@@ -41,6 +53,10 @@ class TemplateInstanceController extends Controller
         }
     }
     
+    /**responds to route
+    /templateInstance POST
+    creates new document
+    */ 
     public function store() {
         if(Auth::user()->can('create',TemplateInstance::class)){
             $data = Input::all();
@@ -52,6 +68,10 @@ class TemplateInstanceController extends Controller
         
     }
     
+    /**responds to route
+    /templateInstance/<id> PUT
+    updates existing document
+    */ 
     public function update(TemplateInstance $templateInstance){
         if(Auth::user()->can('update',$templateInstance)){
             $data = Input::all();
@@ -63,6 +83,10 @@ class TemplateInstanceController extends Controller
         }
     }
     
+    /**responds to route
+    /templateInstance/<id> DELETE
+    deletes given document
+    */ 
     public function destroy(TemplateInstance $templateInstance) {
         if(Auth::user()->can('delete',$templateInstance)){
             $this->service->deleteTemplateInstance($templateInstance->id);
@@ -71,6 +95,10 @@ class TemplateInstanceController extends Controller
         }
     }
     
+    /**responds to route
+    /templateInstance/<id>/html GET
+    returns document represented as html string
+    */ 
     public function getAsHtml(TemplateInstance $templateInstance){
         if(Auth::User()->can('show',$templateInstance)){
             $templateInstance = $this->service->findById($templateInstance->id);
@@ -81,6 +109,10 @@ class TemplateInstanceController extends Controller
 
     }
     
+    /**responds to route
+    /templateInstance/<id>/pdf GET
+    returns document represented as exported pdf using dompdf library
+    */ 
     public function getAsPdf(TemplateInstance $templateInstance){       
         if(Auth::User()->can('show',$templateInstance)){
             $pdf = \App::make('dompdf.wrapper');

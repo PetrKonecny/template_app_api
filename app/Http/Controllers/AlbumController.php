@@ -19,7 +19,10 @@ class AlbumController extends Controller
         $this->middleware('auth');    
     }
     
-    
+    /**responds to route
+    /album  GET
+    gets all albums in the DB
+    */
     public function index(){
         if(Auth::user()->can('index',Album::class)){
             return $this->albumService->getAll();
@@ -28,12 +31,20 @@ class AlbumController extends Controller
         }
     }
    
+   /**responds to route
+    /album/<id>  GET
+    gets one album from the DB
+    */
     public function show(Album $album)
     {   
         $this->authorize('show',$album);
         return $this->albumService->findById($album->id);
     }
 
+    /**responds to route
+    /album/user/<id>  GET
+    gets all albums for currently logged in user
+    */
     public function getUserAlbums($id){
         if(Auth::user()->id == $id || Auth::user()->admin){
             return $this->albumService->getAlbumsForUser(User::find($id));
@@ -42,18 +53,31 @@ class AlbumController extends Controller
         }
     }
 
+    /**responds to route
+    /album/public  GET
+    gets all public albums
+    */
     public function getPublicAlbums(){
         return $this->albumService->getPublicAlbums();
     }
     
+    /**responds to route
+    /album  POST
+    creates new album
+    */
     public function store(Album $album){
         if(Auth::user()->can('store',Album::class)){
-            return $this->albumService->createAlbum(Input::all());
+            $album = $this->albumService->createAlbum(Input::all());
+            return $this->albumService->findById($album->id);
         }else{
             abort(401);
         }
     }
 
+    /**responds to route
+    /album  PUT
+    updates existing album
+    */
     public function update($id){
         $album = $this->albumService->findById($id);
         if(Auth::user()->can('update',$album)){
@@ -64,6 +88,10 @@ class AlbumController extends Controller
         }
     }
 
+    /**responds to route
+    /album/<id>/upload  POST
+    adds image file into the given album 
+    */
     public function uploadTo($id){
         $album = $this->albumService->findById($id);
         if(Auth::user()->can('update',$album)){
@@ -74,6 +102,10 @@ class AlbumController extends Controller
         }
     }
 
+    /**responds to route
+    /album/<id>/move  POST
+    moves image into the given album 
+    */
     public function moveTo($id){
         $album = $this->albumService->findById($id);
         if(Auth::user()->can('update',$album)){
@@ -83,7 +115,11 @@ class AlbumController extends Controller
         }
     }
     
-    public function remove(Album $album){
+    /**responds to route
+    /album/<id>  DELETE
+    removes the album 
+    */
+    public function destroy(Album $album){
         if(Auth::user()->can('remove',$album)){
             $this->albumService->deleteAlbum($album);
         }

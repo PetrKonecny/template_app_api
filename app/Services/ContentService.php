@@ -10,19 +10,13 @@ use App\Font;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ImageService;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- * Description of ElementService
- *
- * @author Petr2
+ * Service providing database access for Content model
  */
 class ContentService {
 
+    //user used for autorization
     private $user;
 
     public function __construct($user = null){
@@ -34,19 +28,30 @@ class ContentService {
         $this->user = $user;
     }
 
+    /** 
+    * gets all contents
+    * @return all contents in the DB
+    */
     public function getAll(){
         return Content::all();
     }
    
+    /** 
+    * finds content by id  
+    * @param id - id of searched content
+    * @return content or null if none found
+    */
     public function findById($id)
     {
         return Content::find($id); 
     }
 
+    //helper function to create text content
     private function createTextContent($array){
         return new TextContent($array);
     }
 
+    //helper function to create image content
     private function createImageContent($array){
         $content = new ImageContent($array);
         if(isset($array['image']['id'])){
@@ -56,11 +61,17 @@ class ContentService {
         return $content;
     }
 
+    //helper function to greate table content
     private function createTableContent($array){
         $array['rows'] = json_encode($array['rows']);
         return new TableContent($array);
     }
     
+    /** 
+    * creates new image, text or table content
+    * @param array - array representing content to create
+    * @return created content
+    */
     public function createContent($array){
         $this->validate($array);
         if($array['type'] == 'text_content'){
@@ -74,15 +85,21 @@ class ContentService {
         return $content;
     }
     
+    /** 
+    * deletes content from DB
+    * @param content - content to delete
+    */
     public function deleteContent($content){
         $content->delete();
     }
 
+    //helper function to update text content
     private function updateTextContent($content,$array){
         $content->text = $array['text']; 
         return $content;        
     }
 
+    //helper function to update image content, if image with invalid id given removes image
     private function updateImageContent($content,$array){
         if(isset($array['image']['id'])){
             $image = Image::find($array['image']['id']);
@@ -105,12 +122,19 @@ class ContentService {
         return $content;
     }
 
+    //helper function to update table content
     private function updateTableContent($content,$array){
         $array['rows'] = json_encode($array['rows']);
         $content->rows = $array['rows'];
         return $content;
     }
     
+    /** 
+    * updates old text, image or table content with new data  
+    * @param content - Content instance to update
+    * @param array - new data to update
+    * @return - updated content
+    */
     public function updateContent($content, $array){
         $this->validate($array);
         $content;
@@ -127,6 +151,7 @@ class ContentService {
         return $content;
     }
 
+    //uses framework to validate content
     public function validate($array){
         $validator = Validator::make($array, [
             'type' => "required|in:text_content,image_content,table_content",

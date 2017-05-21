@@ -3,6 +3,7 @@
 namespace App;
 use App\Content;
 
+//image content model
 class ImageContent extends Content {
 
     protected static $singleTableType = 'image_content';
@@ -12,6 +13,7 @@ class ImageContent extends Content {
         return $this->BelongsTo(Image::class);
     }
     
+    //html representation of image content and its image
     public function toHtml() {
         if($this->image == null){
             return "";

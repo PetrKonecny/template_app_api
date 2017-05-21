@@ -18,6 +18,10 @@ class ContentController extends Controller
         $this->middleware('auth');
     }
 
+    /**responds to route
+    /content  GET
+    gets all content in the DB
+    */
     public function index(){
         if(Auth::user()->can('index',Content::class)){
            return $this->contentService->getAll();
@@ -26,6 +30,10 @@ class ContentController extends Controller
         }
     }
    
+   /**responds to route
+    /content/<id>  GET
+    gets one content from the DB
+    */
     public function show($id){
         $content = $this->contentService->findById($id);
         if(Auth::User()->can('show',$content)){
@@ -35,6 +43,10 @@ class ContentController extends Controller
         }
     }
     
+    /**responds to route
+    /content  POST
+    creates new content
+    */
     public function store(Content $content){
         if(Auth::User()->can('store',$content)){
             return $this->contentService->createContent($content);
@@ -43,6 +55,10 @@ class ContentController extends Controller
         }
     }
 
+    /**responds to route
+    /content  PUT
+    updates existing content
+    */
     public function update(Content $content){
         if(Auth::User()->can('update',$content)){
             return $this->contentService->updateContent($content);
@@ -51,6 +67,10 @@ class ContentController extends Controller
         }    
     }
 
+    /**responds to route
+    /content/<id>  DELETE
+    removes the content 
+    */
     public function remove(Content $content){
         if(Auth::user()->can('remove',$content)){
             $this->contentService->deleteContent($content);
