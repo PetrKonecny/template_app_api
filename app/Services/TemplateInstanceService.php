@@ -92,7 +92,7 @@ class TemplateInstanceService {
         $templateInst->user()->associate($this->user);
         $templateInst->save();
 
-        if(isset($array['tagged'])){
+        if(isset($array['tagged']) && is_array($array['tagged'])){
             $templateInst->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
 
@@ -110,6 +110,14 @@ class TemplateInstanceService {
             }
         }
         return $templateInst;
+    }
+
+    public function createBlankInstance($array){
+        $template = $this->templateService->createTemplate($array);
+        $templateInstance = $this->createTemplateInstance(['template_id' => $template->id]);
+        $templateInstance->blank = true;
+        $templateInstance->save();
+        return $templateInstance;
     }
     
     /** 

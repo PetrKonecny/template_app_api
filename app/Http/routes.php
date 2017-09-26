@@ -57,6 +57,10 @@ Route::get('template/user/{id}',[
     'uses' => 'TemplateController@getUserTemplates'
 ]);
 
+Route::get('template/{template}/pdf', [
+    'uses' => 'TemplateController@getAsPdf'
+]);
+
 Route::resource('template', 'TemplateController');
 
 Route::get('template/{template}/templateInstance',[

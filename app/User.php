@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Template;
 use App\TemplateInstance;
+use App\Album;
+use Illuminate\Database\Eloquent\Model;
 
 //model for user that is authenticable
 class User extends Authenticatable
@@ -30,12 +32,16 @@ class User extends Authenticatable
 
     //relation to its templates
     public function templates(){
-        $this->hasMany(Template::class);
+        return $this->hasMany(Template::class);
     }
 
     //relation to its template instances
     public function templateInstances(){
-        $this->hasMany(TemplateInstance::class);
+        return $this->hasMany(TemplateInstance::class);
+    }
+
+    public function albums(){
+        return $this->hasMany(Album::class);
     }
 
     //whther user is admin or not

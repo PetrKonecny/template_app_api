@@ -70,7 +70,7 @@ class UserController extends Controller
 		return $service->getUserTemplateInstances($user);
 	}
 
-	public function show(User $user){
-		return $user;
+	public function show(User $user, UserService $service){
+		return $service->getUserById($user->id);
 	}
 }

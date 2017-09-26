@@ -60,7 +60,7 @@ class UserService {
     * @return user or null if none found
     */
     public function getUserById($id){
-    	return User::find($id);
+    	return User::with(array('templates' => function($query){$query->where('type','');},'templateInstances','albums'))->find($id);
     }
 
     /**

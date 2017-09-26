@@ -34,7 +34,12 @@ class TemplateController extends Controller {
     */
     public function getUserTemplates($id){
         if(Auth::user()->id == $id || Auth::user()->admin){
-            return $this->service->getTemplatesForUser(User::find($id));
+            $type = Input::get('type');
+            if($type == 'no_instance_template'){
+                return $this->service->getTemplatesForUser(User::find($id),$type);
+            }else{
+                return $this->service->getTemplatesForUser(User::find($id));
+            }
         }else{
             abort(401);
         }
@@ -101,6 +106,28 @@ class TemplateController extends Controller {
         $template = $this->service->findById($template->id);
         $this->service->updateTemplate($template,Input::all());
         return $this->service->findByIdNested($template->id);
+    }
+
+    /**responds to route
+    /templateInstance/<id>/pdf GET
+    returns document represented as exported pdf using dompdf library
+    */ 
+    public function getAsPdf(Template $template){       
+        if(Auth::User()->can('show',$template)){
+            $pdf = \App::make('dompdf.wrapper');
+            $page = $template->pages()->first();
+            $pdf->loadHTML($this->service->findById($template->id)->toHtml(0));
+            $size = 'A4';
+            if($page->width > 100 && $page->height > 100){
+                $width = $page->width * 0.0393701 * 72;
+                $height = $page->height * 0.0393701 * 72;
+                $size = [0,0,$width,$height]
+                ;
+            }
+            return @$pdf->setPaper($size)->stream();
+        }else{
+            abort(401);
+        }
     }
 
 }

@@ -104,7 +104,7 @@ class AlbumService {
             Image::where('album_id', $oldAlbum->id)->whereNotIn('id', $ids)->update(["album_id" => null]);
         }
 
-        if(isset($album['tagged'])){
+        if(isset($album['tagged']) && is_array($album['tagged'])){
             $oldAlbum->retag(array_map(function($tag){return $tag['tag_name'];},$album['tagged']));
         }
 

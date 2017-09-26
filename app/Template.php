@@ -10,7 +10,7 @@ use App\Font;
 class Template extends Model  {
     use \Conner\Tagging\Taggable;
 
-    protected $fillable = ['name','public'];
+    protected $fillable = ['name','public', 'type'];
     
     protected static function boot() {
         parent::boot();

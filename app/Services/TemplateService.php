@@ -7,6 +7,7 @@ use App\Page;
 use App\TextElement;
 use App\Element;
 use App\Services\PageService;
+use App\Services\TemplateInstanceService;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -31,7 +32,7 @@ class TemplateService
     * @return - returns all templates with tags
     */
     public function getAll(){
-        return Template::with('tagged')->get();
+        return Template::with('tagged', 'user')->get();
     }
 
     /**
@@ -39,19 +40,17 @@ class TemplateService
     * @return all public templates with tags
     */
     public function getPublicTemplates(){
-        return Template::where('public',true)->with('tagged')->get();
+        return Template::where('public',true)->with('tagged', 'user')->get();
+    }
+
+    public function getTemplatesForUser($user, $type = null){
+        if($type == null){
+            return Template::where('user_id',$user->id)->where('type','')->with('tagged','user')->get();
+        }else{
+            return Template::where('user_id', $user->id)->where('type', $type)->with('tagged','user')->get();
+        }
     }
    
-
-    /**
-    * gets tempaltes for given user
-    * @param user - user to get templates for
-    * @return templates with tags
-    */
-    public function getTemplatesForUser($user){
-        return Template::where('user_id',$user->id)->with('tagged')->get();
-    }
-
     /**
     * finds template by id
     * @param id - id to search
@@ -103,7 +102,7 @@ class TemplateService
             $template->user()->associate($this->user);
         }
         $template->save();
-        if(isset($array['tagged'])){
+        if(isset($array['tagged']) && is_array($array['tagged'])){
             $template->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
         if(isset($array['pages'])){
@@ -170,6 +169,7 @@ class TemplateService
                 }
             }
         }
+        $template->touch();
         $template->save();
     }
     
