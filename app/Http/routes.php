@@ -52,13 +52,12 @@ Route::get('template/public',[
     'uses' => 'TemplateController@getPublicTemplates'
 ]);
 
-
-Route::get('template/user/{id}',[
-    'uses' => 'TemplateController@getUserTemplates'
-]);
-
 Route::get('template/{template}/pdf', [
     'uses' => 'TemplateController@getAsPdf'
+]);
+
+Route::get('template/demo', [
+    'uses' => 'DemoController@getDemoTemplate'
 ]);
 
 Route::resource('template', 'TemplateController');
@@ -78,11 +77,6 @@ Route::get('templateInstance/{templateInstance}/pdf', [
     'uses' => 'TemplateInstanceController@getAsPdf'
 ]);
 
-Route::get('templateInstance/user/{id}',[
-    'uses' => 'TemplateInstanceController@getUserTemplateInstances'
-]);
-
-
 Route::resource('font', 'FontController');
 
 Route::get('font/{id}/file', [
@@ -94,6 +88,10 @@ Route::resource('content', 'ContentController');
 Route::resource('element', 'ElementController');
 
 Route::resource('page', 'PageController');
+
+Route::get('album/demo',[
+    'uses' => 'DemoController@getDemoAlbum'
+]);
 
 Route::get('album/public',[
     'uses' => 'AlbumController@getPublicAlbums'

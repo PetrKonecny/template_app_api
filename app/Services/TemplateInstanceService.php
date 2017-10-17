@@ -58,15 +58,6 @@ class TemplateInstanceService {
         }
         return $templateInst;
     }
-
-    /**
-    * gets all template instances for given user
-    * @param user - user to find template instances for
-    * @return template instances for user with tags
-    */
-    public function getTemplateInstancesForUser($user){
-        return TemplateInstance::where('user_id',$user->id)->with('tagged')->get();
-    }
     
     /**
     * deletes template instance

@@ -60,7 +60,7 @@ class UserService {
     * @return user or null if none found
     */
     public function getUserById($id){
-    	return User::with(array('templates' => function($query){$query->where('type','');},'templateInstances','albums'))->find($id);
+    	return User::find($id);
     }
 
     /**
@@ -74,11 +74,23 @@ class UserService {
     	return $user;
     }
 
-    public function getUserTemplates($user){
-        return Template::where('user_id', $user->id)->get();
+    public function getTemplatesForUser($user, $type = null){
+        if($type == null){
+            return Template::where('user_id',$user->id)->where('type','')->with('tagged','user')->get();
+        }else{
+            return Template::where('user_id', $user->id)->where('type', $type)->with('tagged','user')->get();
+        }
     }
 
-    public function getUserTemplateInstances($user){
+    public function getPublicTemplatesForUser($user, $type = null){
+        if($type == null){  
+            return Template::where('user_id',$user->id)->where('type','')->where('public',1)->with('tagged','user')->get();
+        }else{
+            return Template::where('user_id', $user->id)->where('type', $type)->where('public',1)->with('tagged','user')->get();
+        }
+    }
+
+    public function getTemplateInstancesForUser($user){
         return TemplateInstance::where('user_id',$user->id)->get();
     }
 

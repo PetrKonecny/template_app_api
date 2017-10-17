@@ -64,7 +64,7 @@ class Element extends Model {
         }
         $opacity = $this->opacity > 0 ? $this->opacity/100 : 100;
         return 
-        "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; height: ".$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; font-size: 12pt;' opacity: ".$opacity." z-index: ".$this->positionZ.";>"
+        "<div style='position: absolute; overflow: hidden; width: ".$this->width."px; background-color:".$this->background_color."; height:" .$this->height."px; top: ".$this->positionY."px; left: ".$this->positionX."px; font-size: 12pt;' opacity: ".$opacity." z-index: ".$this->positionZ.";>"
         .$contentHtml
         ."</div>";
     }

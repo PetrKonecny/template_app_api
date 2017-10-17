@@ -44,6 +44,10 @@ class AlbumService {
     public function getPublicAlbums(){
         return Album::where('public',true)->with('tagged')->get();
     }
+
+    public function getAlbumsByName($name){
+        return Album::where('name', $name)->with('tagged')->get();
+    }
    
 
     /** 
@@ -53,6 +57,10 @@ class AlbumService {
     */
     public function getAlbumsForUser($user){
         return Album::where('user_id',$user->id)->with('tagged')->get();
+    }
+
+    public function getPublicAlbumsForUser($user){
+        return Album::where('user_id',$user->id)->where('public',1)->with('tagged')->get();
     }
    
     /** 

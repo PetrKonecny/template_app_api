@@ -35,6 +35,11 @@ class TemplateService
         return Template::with('tagged', 'user')->get();
     }
 
+    public function getDemo(){
+        $template = Template::where('type','demo_template')->first();
+        return $this->findByIdNested($template->id);
+    }
+
     /**
     * gets all public templates 
     * @return all public templates with tags

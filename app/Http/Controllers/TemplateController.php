@@ -29,23 +29,6 @@ class TemplateController extends Controller {
     }
 
     /**responds to route
-    /template/user/<id>
-    gets templates for given user
-    */
-    public function getUserTemplates($id){
-        if(Auth::user()->id == $id || Auth::user()->admin){
-            $type = Input::get('type');
-            if($type == 'no_instance_template'){
-                return $this->service->getTemplatesForUser(User::find($id),$type);
-            }else{
-                return $this->service->getTemplatesForUser(User::find($id));
-            }
-        }else{
-            abort(401);
-        }
-    }
-
-    /**responds to route
     /template/public  GET
     gets all public templates  in the DB
     */  

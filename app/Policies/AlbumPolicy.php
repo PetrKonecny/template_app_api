@@ -33,12 +33,12 @@ class AlbumPolicy
 
     public function update(User $user, Album $album)
     {
-        return false;
+        return $user->id === $album->user_id;
     }
 
-    public function create(User $user, Album $album)
+    public function create(User $user)
     {
-        return false;
+        return $user->id > 0;
     }
 
     public function show(User $user, Album $album){
@@ -47,6 +47,6 @@ class AlbumPolicy
 
     public function delete(User $user, Album $album)
     {
-        return false;
+        return $user->id === $album->user_id;
     }
 }

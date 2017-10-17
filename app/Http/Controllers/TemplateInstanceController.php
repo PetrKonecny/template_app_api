@@ -40,19 +40,7 @@ class TemplateInstanceController extends Controller
             abort(401);
         }
     }
-
-    /**responds to route
-    /templateInstance/user/<id>  GET
-    gets all documents belonging to the given user
-    */ 
-    public function getUserTemplateInstances($id){
-        if(Auth::user()->id == $id){
-            return $this->service->getTemplateInstancesForUser(User::find($id));
-        }else{
-            abort(401);
-        }
-    }
-    
+   
     /**responds to route
     /templateInstance POST
     creates new document

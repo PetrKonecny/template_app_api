@@ -25,6 +25,7 @@ class UserController extends Controller
 		$user = $service->skautISLogin(Input::get('skautIS_Token'), Input::get('skautIS_IDRole'), Input::get('skautIS_IDUnit'),$skautis);
 		Auth::login($user);
 		return view('index_page');
+		$this->middleware('auth')->except('login','skautISLogin','getCurrent');
 	}
 
 	//this is used in local testing on route /login to log in any user
@@ -52,7 +53,7 @@ class UserController extends Controller
 		if(Auth::check()){
 			return Auth::user();
 		}else{
-		 	abort(404);
+		 	return "{}";
 		}
 	}
 
@@ -63,11 +64,20 @@ class UserController extends Controller
 	}
 
 	public function getTemplates(User $user, UserService $service){
-		return $service->getUserTemplates($user);
+		$type = Input::get('type');
+		if(Auth::user()->id == $user->id || Auth::user()->admin){
+			return $service->getTemplatesForUser($user,$type);
+		}else{
+			return $service->getPublicTemplatesForUser($user,$type);
+		}	
 	}
 
 	public function getTemplateInstances(User $user, UserService $service){
-		return $service->getUserTemplateInstances($user);
+		if(Auth::user()->id == $user->id || Auth::user()->admin){
+			return $service->getTemplateInstancesForUser($user);
+		}else{
+			return '{}';
+		}
 	}
 
 	public function show(User $user, UserService $service){

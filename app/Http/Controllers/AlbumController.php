@@ -16,7 +16,7 @@ class AlbumController extends Controller
     public function __construct(AlbumService $service){
         $this->albumService = $service;
         $this->albumService->setUser(Auth::user());
-        $this->middleware('auth');    
+        $this->middleware('auth')->except('show');    
     }
     
     /**responds to route
@@ -37,8 +37,12 @@ class AlbumController extends Controller
     */
     public function show(Album $album)
     {   
-        $this->authorize('show',$album);
-        return $this->albumService->findById($album->id);
+        if($album->isDemo()){
+            return $this->albumService->findById($album->id);
+        }else{
+            $this->authorize('show',$album);
+            return $this->albumService->findById($album->id);
+        }
     }
 
     /**responds to route
@@ -49,7 +53,7 @@ class AlbumController extends Controller
         if(Auth::user()->id == $id || Auth::user()->admin){
             return $this->albumService->getAlbumsForUser(User::find($id));
         }else{
-            abort(401);
+            return $this->albumService->getPublicAlbumsForUser(User::find($id));
         }
     }
 
@@ -66,7 +70,7 @@ class AlbumController extends Controller
     creates new album
     */
     public function store(Album $album){
-        if(Auth::user()->can('store',Album::class)){
+        if(Auth::user()->can('create',Album::class)){
             $album = $this->albumService->createAlbum(Input::all());
             return $this->albumService->findById($album->id);
         }else{
