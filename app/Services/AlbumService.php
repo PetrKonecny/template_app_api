@@ -145,6 +145,7 @@ class AlbumService {
         $image = $imageService->createImage($image);
         $image->album_id = $album->id;
         $image->save();
+        return $image;
     }
     
     /** 

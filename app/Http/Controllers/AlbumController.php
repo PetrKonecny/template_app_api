@@ -100,7 +100,7 @@ class AlbumController extends Controller
         $album = $this->albumService->findById($id);
         if(Auth::user()->can('update',$album)){
             $image = Input::file("file");
-            $this->albumService->addNewImageToAlbum($album,$image);
+            return $this->albumService->addNewImageToAlbum($album,$image);
         }else{
             abort(401);
         }

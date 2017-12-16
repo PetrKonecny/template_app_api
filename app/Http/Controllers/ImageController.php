@@ -43,7 +43,7 @@ class ImageController extends Controller
     */
     public function store(){
         $image = Input::file("file");
-        $this->imageService->createImage($image);
+        return $this->imageService->uploadImage($image);
     }
     
     /**responds to route

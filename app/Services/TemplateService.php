@@ -110,12 +110,10 @@ class TemplateService
         if(isset($array['tagged']) && is_array($array['tagged'])){
             $template->tag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
         }
-        if(isset($array['pages'])){
-            foreach($array['pages'] as $page){
-                $page = $pageService->createPage($page);
-                $template->pages()->save($page);
-            }
+        if(isset($array['pages']) && is_array($array['pages'])){
+            $this->createPages($array['pages'],$template);
         }
+
         return $template;
     }
     
@@ -154,29 +152,45 @@ class TemplateService
 
         if(isset($array['tagged'])){
             $template->retag(array_map(function($tag){return $tag['tag_name'];},$array['tagged']));
+        }    
+
+        if(isset($array['pages']) && is_array($array['pages'])){
+            $this->deleteOrUpdatePages($array['pages'],$template);
+            $this->createPages($array['pages'],$template);
         }
-        
-        foreach ($template->pages as $page3){                
-            if(isset($array['pages'])){
-                $delete = true;
-                foreach($array['pages'] as $index => $page4){
-                    if(isset($page4['id']) && $page4['id'] === $page3->id){
-                        $delete = false;
-                        $pageService->updatePage($page3,$page4);
-                    }else{
-                        $page4 = $pageService->createPage($page4);
-                        $template->pages()->save($page4);
-                    }
-                    $array['pages'] = array_splice($array['pages'], $index,1);
-                }
-                if($delete){
-                    $page3->delete();
-                }
-            }
-        }
+
         $template->touch();
         $template->save();
+        return $template;
     }
+
+    public function deleteOrUpdatePages($array,$template){
+        $pageService = $this->pageService;
+        foreach ($template->pages as $page){                
+            $delete = true;
+            foreach($array as $pageArray){
+                if(isset($pageArray['id']) && $pageArray['id'] === $page->id){
+                    $delete = false;
+                    $pageService->updatePage($page,$pageArray);
+                }
+            }
+            unset($pageArray);
+            if($delete){
+                $page->delete();
+            }
+        }
+    }
+
+    public function createPages($array,$template){
+        $pageService = $this->pageService;
+        foreach($array as $pageArray){
+            if(!isset($pageArray['id'])){
+                $savedPage = $pageService->createPage($pageArray);
+                $template->pages()->save($savedPage);
+            }
+        }
+    }
+
     
     //gets pages for template
     public function getPagesForTemplate(Template $template){

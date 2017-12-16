@@ -51,11 +51,8 @@ class PageService {
         $elementService = $this->elementService;
         $page = new Page($array);
         $page->save();
-        if(isset($array['elements'])){
-            foreach($array['elements'] as $element){
-                $element = $elementService->createElement($element);
-                $page->elements()->save($element);
-            }
+        if(isset($array['elements']) && is_array($array['elements'])){
+            $this->createElements($array['elements'],$page);
         }
         return $page;
     }
@@ -84,25 +81,40 @@ class PageService {
             $page->height = $array['height'];
         }
 
-        foreach ($page->elements as $element){                
-            if(isset($array['elements'])){
-                $delete = true;
-                foreach($array['elements'] as $index => $element2){
-                    if(isset($element2['id']) && $element2['id'] === $element->id){
-                        $delete = false;
-                        $elementService->updateElement($element,$element2);
-                    }else{
-                        $element2 = $elementService->createelement($element2);
-                        $page->elements()->save($element2);
-                    }
-                    $array['elements'] = array_splice($array['elements'], $index,1);
-                }
-                if($delete){
-                    $element->delete();
-                }
-            }
+        if(isset($array['elements']) && is_array($array['elements'])){
+            $this->deleteOrUpdateElements($array['elements'],$page);
+            $this->createElements($array['elements'],$page);
         }
 
+        $page->touch();
         $page->save();
+        return $page;
+    }
+
+    public function createElements($array,$page){
+        $elementService = $this->elementService;
+        foreach($array as $elementArray){
+            if(!isset($elementArray['id'])){
+                $savedElement = $elementService->createElement($elementArray);
+                $page->elements()->save($savedElement);
+            }
+        }
+    }
+
+    public function deleteOrUpdateElements($array,$page){
+        $elementService = $this->elementService;
+        foreach ($page->elements as $element){                
+            $delete = true;
+            foreach($array as $elementArray){
+                if(isset($elementArray['id']) && $elementArray['id'] === $element->id){
+                    $delete = false;
+                    $elementService->updateElement($element,$elementArray);
+                }
+            }
+            unset($elementArray);
+            if($delete){
+                $element->delete();
+            }
+        }
     }    
 }

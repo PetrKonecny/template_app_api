@@ -42,6 +42,15 @@ class ImageService {
             throw new \RuntimeException("Unauthorized access"); 
         }
     }
+
+    public function uploadImage($file){
+        if($this->user != null && $this->user->albums[0] != null){
+            $image = $this->createImage($file);
+            $image->album_id = $this->user->albums[0]->id;
+            $image->save();
+        }
+        return $image;
+    }
     
     /** 
     * creates new image from file

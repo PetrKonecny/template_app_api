@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use App\User;
 use App\Template;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -32,6 +33,14 @@ class UserController extends Controller
 	public function login($id){
 		$user = User::find($id);
 		Auth::login($user);
+	}
+
+	public function admin(){
+		if (Gate::allows('access-admin-panel')) {
+    		return view('admin_page');
+		}else{
+			abort(403);
+		}
 	}
 
 	//this is used in local version on route \logout to logout the user
