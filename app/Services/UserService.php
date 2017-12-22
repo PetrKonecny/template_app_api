@@ -122,7 +122,6 @@ class UserService {
         }else{
             $user->admin = false;
         }
-        echo $user;
     	$user->token_id = $token_id;
     	$user->save();
     	return $user;
